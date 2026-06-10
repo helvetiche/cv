@@ -18,6 +18,8 @@ import {
   Atom,
   Monitor,
   Globe,
+  ChalkboardTeacher,
+  Backpack, 
 } from "@phosphor-icons/react";
 
 const awards = [
@@ -50,7 +52,7 @@ const educationData = [
     badge: "With Honors",
     badgeIcon: Trophy,
     awards: [
-      { label: "With Honors (Average: 91.5)", icon: Trophy, gold: false },
+      { label: "With Honors (Average: 91.5)", icon: Trophy, gold: true },
       { label: "Best HUMSS Research", icon: Presentation, gold: false },
       { label: "Loyalty Award", icon: Heart, gold: false },
     ],
@@ -63,7 +65,7 @@ const educationData = [
     badge: "With Honors",
     badgeIcon: Trophy,
     awards: [
-      { label: "With Honors (Average: 90.2)", icon: Trophy, gold: false },
+      { label: "With Honors (Average: 90.2)", icon: Trophy, gold: true },
       { label: "Best in English", icon: BookOpen, gold: false },
       { label: "Best in TLE", icon: Monitor, gold: false },
       { label: "Best in Science", icon: Atom, gold: false },
@@ -75,10 +77,17 @@ const educationData = [
 
 const degreeIcons = [GraduationCap, Student, Student];
 
+const filterPills = [
+  { label: "College", icon: GraduationCap },
+  { label: "Senior High School", icon: ChalkboardTeacher },
+  { label: "Junior High School", icon: Backpack },
+];
+
 export default function Education() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "start" });
   const [scrollProgress, setScrollProgress] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [activeFilter, setActiveFilter] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
 
   const onScroll = useCallback(() => {
@@ -86,6 +95,7 @@ export default function Education() {
     const progress = Math.max(0, Math.min(1, emblaApi.scrollProgress()));
     setScrollProgress(progress * 100);
     setSelectedIndex(emblaApi.selectedScrollSnap());
+    setActiveFilter(emblaApi.selectedScrollSnap());
   }, [emblaApi]);
 
   useEffect(() => {
@@ -104,14 +114,48 @@ export default function Education() {
   };
 
   return (
-    <section className="relative w-full min-h-screen bg-black flex flex-col items-center justify-center px-16 py-20">
+    <section className="relative w-full min-h-screen bg-[#0e0013] flex flex-col items-center justify-center px-16 py-20">
       {/* Title */}
       <h2
-        className="text-white text-6xl font-light tracking-tight mb-16"
+        className="text-white text-6xl font-light tracking-tight mb-8"
         style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
       >
         Education
       </h2>
+
+      {/* Filter Pills */}
+      <div className="flex items-center justify-center gap-3 mb-6">
+        {filterPills.map((pill, index) => {
+          const PillIcon = pill.icon;
+          const isActive = activeFilter === index;
+          return (
+            <button
+              key={pill.label}
+              onClick={() => {
+                setActiveFilter(index);
+                emblaApi?.scrollTo(index);
+              }}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all duration-300 ${
+                isActive
+                  ? "bg-white/10 border-white/30 text-white"
+                  : "bg-transparent border-white/10 text-white/40 hover:text-white/60 hover:border-white/20"
+              }`}
+            >
+              <PillIcon size={16} weight="fill" />
+              <span className="text-sm font-mono tracking-wide uppercase">
+                {pill.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Description */}
+      <p
+        className="text-white/40 text-sm font-mono text-center max-w-2xl mb-12"
+      >
+        A learning journey from high school to college, developing skills, discipline, and passion for technology and modern digital solutions.
+      </p>
 
       {/* Carousel */}
       <div className="w-full overflow-hidden" ref={emblaRef}>

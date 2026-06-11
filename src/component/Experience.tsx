@@ -1,17 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 import BorderGlow from "./BorderGlow";
 import {
-  CaretDown,
   Calendar,
   Rocket,
   Code,
   PaintBrush,
   Briefcase,
   GraduationCap,
+  CaretLeft,
+  CaretRight,
+  ListChecks,
 } from "@phosphor-icons/react";
 
+/* ============================================
+   DATA - Experience Items
+   ============================================ */
 interface ExperienceItem {
   year: string;
   title: string;
@@ -20,218 +26,337 @@ interface ExperienceItem {
   responsibilities: string[];
   technologies: string[];
   icon: React.ElementType;
+  images: string[];
 }
 
 const experienceData: ExperienceItem[] = [
   {
-    year: "2025 — 2026",
+    year: "2024 — Present",
     title: "Freelance Developer",
     company: "Self-Employed",
     description:
-      "Building modern web applications for clients across various industries, delivering end-to-end solutions from concept to deployment.",
+      "Building modern web applications for clients across various industries, delivering end-to-end solutions from concept to deployment for both students and business.",
     responsibilities: [
-      "Developed custom web applications using React, Next.js, and TypeScript",
-      "Implemented responsive designs with modern UI/UX principles",
-      "Integrated third-party APIs and payment systems",
-      "Managed full project lifecycle and client relationships",
+      "Fulfill clients' custom features and revisions",
+      "Maintain system's continuous integration",
+      "Discuss features and implementations with clients",
+      "Research for the best practices based on the client's requirements",
     ],
-    technologies: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Node.js"],
+    technologies: ["React", "Next.js", "TypeScript", "Firebase", "Redis", "Upstash", "Tailwind CSS"],
     icon: Rocket,
+    images: [
+      "/freelancing/image-1.png",
+      "/freelancing/image-2.png",
+      "/freelancing/image-3.png",
+      "/freelancing/image-4.png",
+    ],
   },
   {
     year: "2024 — 2025",
-    title: "Web Development Intern",
-    company: "Tech Solutions Inc.",
+    title: "Web Developer Intern",
+    company: "National Irrigation Administration - BANEIMO R3",
     description:
-      "Contributed to client projects while learning industry best practices in a fast-paced agency environment.",
+      "Automated manual accounting workflows using Node.js-based Excel manipulation, reducing weekly data encoding tasks from days to under 5 minutes — a 95% reduction in time consumed.",
     responsibilities: [
-      "Developed and maintained client websites using modern JavaScript frameworks",
-      "Collaborated with design team to implement pixel-perfect UI components",
-      "Optimized website performance achieving 40% faster load times",
-      "Participated in code reviews and agile development processes",
+      "Built Excel automation tools using Node.js to streamline accounting processes",
+      "Reduced manual data encoding time by 95%, turning weeks of work into minutes",
+      "Collaborated with staff to understand workflow pain points and requirements",
+      "Documented system processes and provided user training",
     ],
-    technologies: ["JavaScript", "React", "SCSS", "Git", "Figma"],
+    technologies: ["Node.js", "JavaScript", "Excel", "Automation"],
     icon: Code,
+    images: [
+      "/intern/image-1.png",
+      "/intern/image-2.png",
+      "/intern/image-3.png",
+      "/intern/image-4.png",
+    ],
   },
   {
-    year: "2023 — 2024",
-    title: "UI/UX Design Assistant",
-    company: "Creative Digital Agency",
+    year: "2023 — 2025",
+    title: "Organization President",
+    company: "CICS - College of Information and Computer Studies",
     description:
-      "Supported the design team in creating intuitive user experiences and visually appealing interfaces.",
+      "Led an IT organization dedicated to fostering growth through educational initiatives, workshops, seminars, competitions, and fundraising events — creating an engaging and enriching experience for college students.",
     responsibilities: [
-      "Created wireframes and prototypes for mobile and web applications",
-      "Conducted user research and usability testing sessions",
-      "Designed brand identities and marketing materials",
-      "Collaborated with developers to ensure design feasibility",
+      "Directed organization operations and strategic planning for IT-focused events",
+      "Organized educational workshops, seminars, and technical competitions",
+      "Coordinated fundraising events to support organization activities and member development",
+      "Mentored members in technical skills and professional growth",
     ],
-    technologies: ["Figma", "Adobe XD", "Illustrator", "Photoshop"],
-    icon: PaintBrush,
+    technologies: ["Leadership", "Event Management", "Public Speaking", "Team Building"],
+    icon: GraduationCap,
+    images: [
+      "/cics/image-1.png",
+      "/cics/image-2.png",
+      "/cics/image-3.png",
+      "/cics/image-4.png",
+    ],
   },
   {
     year: "2022 — 2023",
-    title: "Junior Developer",
-    company: "StartUp Hub",
+    title: "Social Media Manager",
+    company: "CICS - College of Information and Computer Studies",
     description:
-      "Started my professional journey building foundational skills in web development and team collaboration.",
+      "Managed the official Facebook page of the organization, serving as the primary voice for public communications. Crafted engaging content, published event announcements, and kept the community informed about upcoming activities, workshops, and organizational updates.",
     responsibilities: [
-      "Built responsive landing pages and marketing websites",
-      "Assisted senior developers with bug fixes and feature implementations",
-      "Learned version control with Git and collaborative workflows",
-      "Contributed to internal tools and documentation",
+      "Managed and maintained the organization's official Facebook page",
+      "Created and published public announcements, event updates, and promotional content",
+      "Engaged with the online community to foster awareness and participation",
+      "Coordinated with the events team to ensure timely and accurate information dissemination",
     ],
-    technologies: ["HTML", "CSS", "JavaScript", "WordPress", "Git"],
-    icon: Briefcase,
+    technologies: ["Social Media Management", "Content Creation", "Facebook", "Communication"],
+    icon: PaintBrush,
+    images: [
+      "/smm/image-1.png",
+      "/smm/image-2.png",
+      "/smm/image-3.png",
+      "/smm/image-4.png",
+    ],
   },
   {
     year: "2022",
-    title: "BS Information Technology",
-    company: "Marian College of Baliuag",
+    title: "Film Director",
+    company: "SIKRETONG LIPUNAN (Secret Society) - Star Productions",
     description:
-      "Graduated Magna Cum Laude, specializing in web development and emerging technologies.",
+      "Directed a short film exploring friendship and mystery as a group of friends uncover the truth behind their missing companions — only to discover it was all a dream, or was it? The film blurred the lines between reality and illusion, delivering a thought-provoking narrative.",
     responsibilities: [
-      "Graduated Magna Cum Laude with GWA of 1.19",
-      "Specialized in web development and emerging technologies",
-      "Completed capstone project on AI-powered systems",
-      "Active member of programming and tech clubs",
+      "Directed the short film from pre-production to final cut",
+      "Led the creative team in script development and visual storytelling",
+      "Managed production timelines and coordinated with cast and crew",
     ],
-    technologies: ["Java", "Python", "MySQL", "Networking", "Systems Analysis"],
+    technologies: ["Film Direction", "Cinematography", "Editing", "Scriptwriting", "Sound Design"],
     icon: GraduationCap,
+    images: [
+      "/film/image-1.png",
+      "/film/image-2.png",
+      "/film/image-3.png",
+      "/film/image-4.png",
+    ],
   },
 ];
 
-function TimelineCard({ item, index }: { item: ExperienceItem; index: number }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const Icon = item.icon;
+/* ============================================
+   COMPONENT - Image Carousel (Right Side)
+   ============================================ */
+function ImageCarousel({ images }: { images: string[] }) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+  const scrollTo = useCallback((index: number) => emblaApi?.scrollTo(index), [emblaApi]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    setScrollSnaps(emblaApi.scrollSnapList());
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+  }, [emblaApi, onSelect]);
 
   return (
-    <div className="relative flex group">
-      {/* Timeline Line & Dot - Fixed left */}
-      <div className="flex flex-col items-center pl-20 pr-8">
-        {/* Dot with Icon */}
-        <div className="relative z-10 flex items-center justify-center w-10 h-10 rounded-full border border-white/20 bg-[#0e0013] transition-all duration-300 group-hover:scale-110 group-hover:border-white/40">
-          <Icon size={16} weight="fill" color="rgba(255,255,255,0.7)" />
+    <div className="relative w-full flex flex-col h-full">
+      {/* Carousel Viewport - 16:9 */}
+      <div className="overflow-hidden rounded-lg flex-1" ref={emblaRef}>
+        <div className="flex h-full">
+          {images.map((src, i) => (
+            <div key={i} className="flex-[0_0_100%] min-w-0 h-full">
+              <div className="relative w-full h-full" style={{ paddingBottom: "56.25%" }}>
+                <img
+                  src={src}
+                  alt={`Project ${i + 1}`}
+                  className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                />
+              </div>
+            </div>
+          ))}
         </div>
-        {/* Line */}
-        {index < experienceData.length - 1 && (
-          <div className="w-px flex-1 min-h-[40px] mt-4 bg-gradient-to-b from-white/20 to-transparent" />
-        )}
       </div>
 
-      {/* Card Content - Full Width */}
-      <div className="flex-1 pr-20 pb-12">
-        <BorderGlow
-          edgeSensitivity={30}
-          glowColor="0 0 100"
-          backgroundColor="#120F17"
-          borderRadius={20}
-          glowRadius={30}
-          glowIntensity={0.5}
-          coneSpread={25}
-          animated={false}
-          colors={["#ffffff", "#ffffff", "#ffffff"]}
-        >
-          <div className="p-8">
-            {/* Header */}
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Calendar size={14} weight="fill" color="rgba(255,255,255,0.5)" />
-                <span className="text-sm font-mono tracking-wider uppercase text-white/50">
-                  {item.year}
-                </span>
-              </div>
-              <h3
-                className="text-white text-2xl font-light mb-1"
-                style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
-              >
-                {item.title}
-              </h3>
-              <p className="text-white/40 text-sm font-mono tracking-wide">
-                {item.company}
-              </p>
-            </div>
-
-            {/* Description */}
-            <p
-              className="text-white/50 text-base leading-relaxed mb-6"
-              style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
-            >
-              {item.description}
-            </p>
-
-            {/* Responsibilities */}
-            <div className="mb-6">
-              <p className="text-white/25 text-xs font-mono uppercase tracking-widest mb-3">
-                Key Responsibilities
-              </p>
-              <ul className="space-y-2">
-                {(isExpanded ? item.responsibilities : item.responsibilities.slice(0, 2)).map(
-                  (resp, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-3 text-white/40 text-sm font-mono leading-relaxed"
-                    >
-                      <span className="text-white/20 mt-1">▹</span>
-                      {resp}
-                    </li>
-                  )
-                )}
-              </ul>
-              {item.responsibilities.length > 2 && (
-                <button
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className="flex items-center gap-2 mt-4 text-xs font-mono uppercase tracking-wider text-white/40 hover:text-white/60 transition-colors duration-200"
-                >
-                  {isExpanded ? "Show less" : `Show ${item.responsibilities.length - 2} more`}
-                  <CaretDown
-                    size={12}
-                    weight="bold"
-                    className={`transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
-                  />
-                </button>
-              )}
-            </div>
-
-            {/* Technologies */}
-            <div>
-              <p className="text-white/25 text-xs font-mono uppercase tracking-widest mb-3">
-                Technologies
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {item.technologies.map((tech, i) => (
-                  <span
-                    key={i}
-                    className="px-3 py-1.5 rounded-full text-xs font-mono tracking-wide border border-white/10 text-white/40 bg-white/[0.03] transition-all duration-200 hover:border-white/20 hover:text-white/60"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </BorderGlow>
+      {/* Navigation */}
+      <div className="flex items-center justify-between mt-4">
+        <div className="flex gap-2">
+          <button
+            onClick={scrollPrev}
+            className="w-8 h-8 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
+          >
+            <CaretLeft size={14} weight="bold" />
+          </button>
+          <button
+            onClick={scrollNext}
+            className="w-8 h-8 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
+          >
+            <CaretRight size={14} weight="bold" />
+          </button>
+        </div>
+        <div className="flex gap-1.5">
+          {scrollSnaps.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => scrollTo(i)}
+              className={`h-1.5 rounded-full transition-all ${
+                selectedIndex === i ? "bg-white/70 w-4" : "bg-white/20 w-1.5 hover:bg-white/40"
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
-export default function Experience() {
+/* ============================================
+   COMPONENT - Timeline Card
+   Left Side: Info | Right Side: Carousel
+   ============================================ */
+function TimelineCard({ item, index }: { item: ExperienceItem; index: number }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const Icon = item.icon;
+
   return (
-    <section className="relative w-full bg-[#0e0013] min-h-screen py-20">
-      {/* Section Header */}
-      <div className="mb-16 pl-20">
-        <h2
-          className="text-white text-6xl font-light tracking-tight mb-4"
-          style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
-        >
-          Experience
-        </h2>
-        <p className="text-white/30 text-sm font-mono max-w-xl leading-relaxed">
-          My professional journey and academic milestones from 2022 to 2026.
-        </p>
+    <article className="relative flex group">
+      {/* ---- TIMELINE DOT & LINE (Far Left) ---- */}
+      <div className="flex flex-col items-center pl-20 pr-10 relative">
+        <div className="relative z-10 flex items-center justify-center w-11 h-11 rounded-full border border-white/20 bg-[#0e0013] transition-all duration-300 group-hover:scale-110 group-hover:border-white/50">
+          <Icon size={18} weight="fill" color="rgba(255,255,255,0.8)" />
+        </div>
+
       </div>
 
-      {/* Timeline - Full Width */}
+      {/* ---- CARD CONTENT (50/50 Split) ---- */}
+      <div className="flex-1 pr-20 pb-12">
+        <BorderGlow
+          edgeSensitivity={30}
+          glowColor="0 0 100"
+          backgroundColor="#120F17"
+          borderRadius={16}
+          glowRadius={20}
+          glowIntensity={0.3}
+          coneSpread={25}
+          animated={false}
+          colors={["#ffffff", "#ffffff", "#ffffff"]}
+        >
+          <div className="flex min-h-[340px]">
+            {/* ======== LEFT SIDE: Info (50%) ======== */}
+            <div className="w-1/2 p-10 flex flex-col">
+              {/* Period */}
+              <header className="mb-8">
+                <div className="flex items-center gap-2 mb-4">
+                  <Calendar size={14} weight="fill" color="rgba(255,255,255,0.4)" />
+                  <time className="text-sm font-mono tracking-widest uppercase text-white/40">
+                    {item.year}
+                  </time>
+                </div>
+                <h3
+                  className="text-white text-3xl font-light leading-tight mb-2"
+                  style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
+                >
+                  {item.title}
+                </h3>
+                <p className="text-white/40 text-base font-mono tracking-wide">
+                  {item.company}
+                </p>
+              </header>
+
+              {/* Description */}
+              <p
+                className="text-white/50 text-lg leading-[1.8] mb-8"
+                style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
+              >
+                {item.description}
+              </p>
+
+              {/* Responsibilities */}
+              <div className="mb-8">
+                <div className="flex items-center gap-2 mb-4">
+                  <ListChecks size={13} weight="fill" color="rgba(255,255,255,0.3)" />
+                  <span className="text-xs font-mono uppercase tracking-[0.15em] text-white/30">
+                    Responsibilities
+                  </span>
+                </div>
+                <ul className="space-y-3">
+                  {(isExpanded ? item.responsibilities : item.responsibilities.slice(0, 2)).map(
+                    (resp, i) => (
+                      <li key={i} className="flex items-start gap-3 text-white/45 text-base font-mono leading-relaxed">
+                        <span className="text-white/20 mt-0.5 shrink-0">▹</span>
+                        <span>{resp}</span>
+                      </li>
+                    )
+                  )}
+                </ul>
+                {item.responsibilities.length > 2 && (
+                  <button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="mt-4 text-xs font-mono uppercase tracking-widest text-white/35 hover:text-white/55 transition-colors"
+                  >
+                    {isExpanded ? "Show less" : `+${item.responsibilities.length - 2} more`}
+                  </button>
+                )}
+              </div>
+
+              {/* Technologies */}
+              <footer className="mt-auto">
+                <span className="text-xs font-mono uppercase tracking-[0.15em] text-white/25 block mb-3">
+                  Technologies
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {item.technologies.map((tech, i) => (
+                    <span
+                      key={i}
+                      className="px-3 py-1.5 rounded-full text-xs font-mono tracking-wide border border-white/10 text-white/40 bg-white/[0.03]"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </footer>
+            </div>
+
+            {/* ======== RIGHT SIDE: Carousel (50%) ======== */}
+            <div className="w-1/2 p-6 flex items-center">
+              <ImageCarousel images={item.images} />
+            </div>
+          </div>
+        </BorderGlow>
+      </div>
+    </article>
+  );
+}
+
+/* ============================================
+   MAIN COMPONENT - Experience Section
+   ============================================ */
+export default function Experience() {
+  return (
+    <section className="relative w-full bg-[#0e0013] min-h-screen py-24">
+      {/* Section Header */}
+      <header className="mb-20 text-center">
+        <div className="flex items-center justify-center gap-4 mb-6">
+          <h2
+            className="text-white text-6xl font-light tracking-tight"
+            style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
+          >
+            Experience
+          </h2>
+          <span className="px-4 py-2 rounded-full border border-white/10 bg-white/[0.03]">
+            <span className="text-xs font-mono tracking-widest uppercase text-white/50">
+              2022 — Present
+            </span>
+          </span>
+        </div>
+        <p className="text-white/25 text-sm font-mono max-w-xl mx-auto leading-relaxed">
+          Professional journey and academic milestones.
+        </p>
+      </header>
+
+      {/* Timeline */}
       <div className="w-full">
         {experienceData.map((item, index) => (
           <TimelineCard key={index} item={item} index={index} />

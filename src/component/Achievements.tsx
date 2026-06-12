@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import BorderGlow from "./BorderGlow";
+import GridBackground from "./GridBackground";
 import {
   Megaphone,
   Trophy,
@@ -92,7 +93,11 @@ export default function Achievements() {
   }, [emblaApi, onSelect]);
 
   return (
-    <section className="relative w-full bg-[#000000] py-24">
+    <section className="relative w-full bg-[#000000] py-24 overflow-hidden">
+
+      {/* Grid Background with Vignette */}
+      <GridBackground />
+
       {/* Section Header */}
       <div className="text-center mb-16 px-20">
         <h2
@@ -150,7 +155,7 @@ export default function Achievements() {
                     animated={false}
                     colors={["#ffffff", "#ffffff", "#ffffff"]}
                   >
-                    <div className="p-8 flex flex-col h-full">
+                    <div className="p-8 flex flex-col h-[380px]">
                       {/* Header with Icon */}
                       <div className="flex items-center gap-4 mb-6">
                         <div className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.02] shrink-0">

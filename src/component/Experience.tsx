@@ -406,8 +406,8 @@ export default function Experience() {
           })}
         </div>
 
-        <p className="text-white/25 text-sm font-mono max-w-xl mx-auto leading-relaxed">
-          Professional journey and academic milestones.
+        <p className="text-white/25 text-sm font-mono max-w-2xl mx-auto leading-relaxed">
+          A timeline of professional growth, leadership roles, and creative endeavors — from freelance development and internships to student organization leadership and film production.
         </p>
       </header>
 

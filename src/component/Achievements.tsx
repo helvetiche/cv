@@ -16,6 +16,9 @@ import {
   Medal,
   Presentation,
   Handshake,
+  GraduationCap,
+  Code,
+  SealCheck,
 } from "@phosphor-icons/react";
 
 const filterPills = [
@@ -59,6 +62,30 @@ const achievements = [
       { icon: Crown, label: "2 Years President" },
       { icon: Handshake, label: "Team Builder" },
       { icon: Users, label: "50+ Members" },
+    ],
+  },
+  {
+    icon: Medal,
+    title: "Magna Cum Laude",
+    category: "awards",
+    description:
+      "Graduated with the distinguished honor of Magna Cum Laude, achieving a General Weighted Average of 1.19. This recognition reflects years of dedication, academic excellence, and consistent performance throughout the Bachelor of Science in Information Technology program.",
+    highlights: [
+      { icon: Medal, label: "GWA: 1.19" },
+      { icon: Star, label: "Academic Excellence" },
+      { icon: GraduationCap, label: "BSIT Graduate" },
+    ],
+  },
+  {
+    icon: Trophy,
+    title: "Academic Awardee",
+    category: "awards",
+    description:
+      "Received multiple prestigious academic awards throughout college, including Outstanding Programmer Awardee, Best in Application & Emerging Technologies, Best Capstone Research Presentation, Best in Web Programming, Diligence Award, Synergy Award, Leadership Award, and Loyalty Award.",
+    highlights: [
+      { icon: Code, label: "Best Programmer" },
+      { icon: Presentation, label: "Best Capstone" },
+      { icon: SealCheck, label: "8+ Awards" },
     ],
   },
 ];

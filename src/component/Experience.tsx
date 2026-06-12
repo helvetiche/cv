@@ -3,17 +3,27 @@
 import { useState, useCallback, useEffect } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import BorderGlow from "./BorderGlow";
+import GridBackground from "./GridBackground";
 import {
   Calendar,
   Rocket,
   Code,
   PaintBrush,
-  Briefcase,
   GraduationCap,
   CaretLeft,
   CaretRight,
   ListChecks,
+  Briefcase,
 } from "@phosphor-icons/react";
+
+/* ============================================
+   FILTER PILLS
+   ============================================ */
+const filterPills = [
+  { label: "All", icon: Briefcase },
+  { label: "Work", icon: Code },
+  { label: "Leadership", icon: GraduationCap },
+];
 
 /* ============================================
    DATA - Experience Items
@@ -27,6 +37,7 @@ interface ExperienceItem {
   technologies: string[];
   icon: React.ElementType;
   images: string[];
+  category: "work" | "leadership";
 }
 
 const experienceData: ExperienceItem[] = [
@@ -50,6 +61,7 @@ const experienceData: ExperienceItem[] = [
       "/freelancing/image-3.png",
       "/freelancing/image-4.png",
     ],
+    category: "work",
   },
   {
     year: "2024 — 2025",
@@ -71,6 +83,7 @@ const experienceData: ExperienceItem[] = [
       "/intern/image-3.png",
       "/intern/image-4.png",
     ],
+    category: "work",
   },
   {
     year: "2023 — 2025",
@@ -92,6 +105,7 @@ const experienceData: ExperienceItem[] = [
       "/cics/image-3.png",
       "/cics/image-4.png",
     ],
+    category: "leadership",
   },
   {
     year: "2022 — 2023",
@@ -113,6 +127,7 @@ const experienceData: ExperienceItem[] = [
       "/smm/image-3.png",
       "/smm/image-4.png",
     ],
+    category: "leadership",
   },
   {
     year: "2022",
@@ -122,6 +137,7 @@ const experienceData: ExperienceItem[] = [
       "Directed a short film exploring friendship and mystery as a group of friends uncover the truth behind their missing companions — only to discover it was all a dream, or was it? The film blurred the lines between reality and illusion, delivering a thought-provoking narrative.",
     responsibilities: [
       "Directed the short film from pre-production to final cut",
+      "Oversaw cinematography, editing, and original soundtrack production",
       "Led the creative team in script development and visual storytelling",
       "Managed production timelines and coordinated with cast and crew",
     ],
@@ -133,6 +149,7 @@ const experienceData: ExperienceItem[] = [
       "/film/image-3.png",
       "/film/image-4.png",
     ],
+    category: "leadership",
   },
 ];
 
@@ -216,7 +233,7 @@ function ImageCarousel({ images }: { images: string[] }) {
    COMPONENT - Timeline Card
    Left Side: Info | Right Side: Carousel
    ============================================ */
-function TimelineCard({ item, index }: { item: ExperienceItem; index: number }) {
+function TimelineCard({ item, index, isLast }: { item: ExperienceItem; index: number; isLast: boolean }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const Icon = item.icon;
 
@@ -224,7 +241,7 @@ function TimelineCard({ item, index }: { item: ExperienceItem; index: number }) 
     <article className="relative flex group">
       {/* ---- TIMELINE DOT & LINE (Far Left) ---- */}
       <div className="flex flex-col items-center pl-20 pr-10 relative">
-        <div className="relative z-10 flex items-center justify-center w-11 h-11 rounded-full border border-white/20 bg-[#0e0013] transition-all duration-300 group-hover:scale-110 group-hover:border-white/50">
+        <div className="relative z-10 flex items-center justify-center w-11 h-11 rounded-full border border-white/20 bg-[#000000] transition-all duration-300 group-hover:scale-110 group-hover:border-white/50">
           <Icon size={18} weight="fill" color="rgba(255,255,255,0.8)" />
         </div>
 
@@ -334,23 +351,61 @@ function TimelineCard({ item, index }: { item: ExperienceItem; index: number }) 
    MAIN COMPONENT - Experience Section
    ============================================ */
 export default function Experience() {
+  const [activeFilter, setActiveFilter] = useState(0);
+
+  const filteredData = activeFilter === 0
+    ? experienceData
+    : activeFilter === 1
+      ? experienceData.filter((item) => item.category === "work")
+      : experienceData.filter((item) => item.category === "leadership");
+
   return (
-    <section className="relative w-full bg-[#0e0013] min-h-screen py-24">
+    <section className="relative w-full min-h-screen py-24 overflow-hidden">
+
+      {/* Base Background Color */}
+      <div className="absolute inset-0 bg-[#000000] z-0" />
+
+      {/* Grid Background with Vignette */}
+      <div className="absolute inset-0 z-1">
+        <GridBackground />
+      </div>
+
+      {/* Content Layer */}
+      <div className="relative z-10">
+
       {/* Section Header */}
       <header className="mb-20 text-center">
-        <div className="flex items-center justify-center gap-4 mb-6">
-          <h2
-            className="text-white text-6xl font-light tracking-tight"
-            style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
-          >
-            Experience
-          </h2>
-          <span className="px-4 py-2 rounded-full border border-white/10 bg-white/[0.03]">
-            <span className="text-xs font-mono tracking-widest uppercase text-white/50">
-              2022 — Present
-            </span>
-          </span>
+        <h2
+          className="text-white text-6xl font-light tracking-tight mb-8"
+          style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
+        >
+          Experience
+        </h2>
+
+        {/* Filter Pills */}
+        <div className="flex items-center justify-center gap-3 mb-6">
+          {filterPills.map((pill, index) => {
+            const PillIcon = pill.icon;
+            const isActive = activeFilter === index;
+            return (
+              <button
+                key={pill.label}
+                onClick={() => setActiveFilter(index)}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all duration-300 ${
+                  isActive
+                    ? "bg-white/10 border-white/30 text-white"
+                    : "bg-transparent border-white/10 text-white/40 hover:text-white/60 hover:border-white/20"
+                }`}
+              >
+                <PillIcon size={16} weight="fill" />
+                <span className="text-sm font-mono tracking-wide uppercase">
+                  {pill.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
+
         <p className="text-white/25 text-sm font-mono max-w-xl mx-auto leading-relaxed">
           Professional journey and academic milestones.
         </p>
@@ -358,9 +413,15 @@ export default function Experience() {
 
       {/* Timeline */}
       <div className="w-full">
-        {experienceData.map((item, index) => (
-          <TimelineCard key={index} item={item} index={index} />
+        {filteredData.map((item, index) => (
+          <TimelineCard
+            key={`${activeFilter}-${index}`}
+            item={item}
+            index={index}
+            isLast={index === filteredData.length - 1}
+          />
         ))}
+      </div>
       </div>
     </section>
   );

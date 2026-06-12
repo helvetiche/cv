@@ -32,6 +32,7 @@ export default function Hero() {
         />
       </div>
       <div className="relative z-10 w-full h-full" />
+
       <Fade />
       <Banner />
       <Name />

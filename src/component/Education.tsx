@@ -114,7 +114,7 @@ export default function Education() {
   };
 
   return (
-    <section className="relative w-full min-h-screen bg-[#0e0013] flex flex-col items-center justify-center px-16 py-20">
+    <section className="relative w-full min-h-screen bg-[#000000] flex flex-col items-center justify-center px-16 py-20">
       {/* Title */}
       <h2
         className="text-white text-6xl font-light tracking-tight mb-8"

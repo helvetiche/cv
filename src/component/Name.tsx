@@ -2,7 +2,7 @@ import Pills from './Pills';
 
 export default function Name() {
   return (
-    <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-auto z-30 max-w-full md:max-w-[50%]">
+    <div className="absolute top-20 md:bottom-8 md:top-auto left-4 right-4 md:left-8 md:right-auto z-30 max-w-full md:max-w-[50%]">
       <h1
         className="text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light tracking-tight"
         style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}

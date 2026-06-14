@@ -35,8 +35,12 @@ export default function Hero() {
 
       <Fade />
       <Banner />
-      <Name />
-      <RightContent />
+      
+      {/* Content Container - stacks on mobile, side-by-side on desktop */}
+      <div className="relative z-20 flex flex-col md:flex-row md:items-end md:justify-between min-h-screen px-4 md:px-8 pb-8 md:pb-8">
+        <Name />
+        <RightContent />
+      </div>
     </section>
   );
 }

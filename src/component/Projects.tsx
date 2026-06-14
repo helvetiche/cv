@@ -198,26 +198,26 @@ function ProjectCard({ project }: { project: Project }) {
         <ProjectImageCarousel images={project.images} title={project.title} />
 
         {/* Content Area */}
-        <div className="p-6 flex flex-col flex-1">
+        <div className="p-4 md:p-6 flex flex-col flex-1">
           {/* Title */}
           <h3
-            className="text-white text-xl font-light mb-3"
+            className="text-white text-lg md:text-xl font-light mb-2 md:mb-3"
             style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
           >
             {project.title}
           </h3>
 
           {/* Description */}
-          <p className="text-white/40 text-sm font-mono leading-relaxed mb-4 text-justify">
+          <p className="text-white/40 text-xs md:text-sm font-mono leading-relaxed mb-3 md:mb-4 text-justify">
             {project.description}
           </p>
 
           {/* Tech Tags */}
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4">
             {project.technologies.map((tech, i) => (
               <span
                 key={i}
-                className="px-2.5 py-1 rounded-full text-[11px] font-mono tracking-wide border border-white/10 text-white/40 bg-white/[0.03]"
+                className="px-2 md:px-2.5 py-0.5 md:py-1 rounded-full text-[10px] md:text-[11px] font-mono tracking-wide border border-white/10 text-white/40 bg-white/[0.03]"
               >
                 {tech}
               </span>
@@ -225,15 +225,15 @@ function ProjectCard({ project }: { project: Project }) {
           </div>
 
           {/* Links */}
-          <div className="flex items-center gap-3 mt-auto pt-4 border-t border-white/5">
+          <div className="flex items-center gap-3 mt-auto pt-3 md:pt-4 border-t border-white/5">
             {project.liveUrl && (
               <a
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-white/40 hover:text-white/70 transition-colors text-xs font-mono uppercase tracking-wide"
+                className="flex items-center gap-1.5 text-white/40 hover:text-white/70 transition-colors text-[10px] md:text-xs font-mono uppercase tracking-wide"
               >
-                <Globe size={14} weight="bold" />
+                <Globe size={12} weight="bold" className="md:w-3.5 md:h-3.5" />
                 Live
               </a>
             )}
@@ -242,9 +242,9 @@ function ProjectCard({ project }: { project: Project }) {
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-white/40 hover:text-white/70 transition-colors text-xs font-mono uppercase tracking-wide"
+                className="flex items-center gap-1.5 text-white/40 hover:text-white/70 transition-colors text-[10px] md:text-xs font-mono uppercase tracking-wide"
               >
-                <GithubLogo size={14} weight="bold" />
+                <GithubLogo size={12} weight="bold" className="md:w-3.5 md:h-3.5" />
                 GitHub
               </a>
             )}
@@ -287,21 +287,21 @@ export default function Projects() {
   }, [emblaApi, onSelect]);
 
   return (
-    <section className="relative w-full bg-[#000000] py-24 overflow-hidden min-h-screen">
+    <section className="relative w-full bg-[#000000] py-12 md:py-16 lg:py-24 overflow-hidden min-h-screen">
       {/* Grid Background */}
       <GridBackground />
 
       {/* Section Header */}
-      <div className="relative z-10 text-center mb-16 px-20">
+      <div className="relative z-10 text-center mb-8 md:mb-12 lg:mb-16 px-4 md:px-8 lg:px-20">
         <h2
-          className="text-white text-6xl font-light tracking-tight mb-8"
+          className="text-white text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light tracking-tight mb-4 md:mb-6 lg:mb-8"
           style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
         >
           Projects
         </h2>
 
         {/* Filter Pills */}
-        <div className="flex items-center justify-center gap-3 mb-6">
+        <div className="flex items-center justify-center gap-2 md:gap-3 mb-4 md:mb-6 overflow-x-auto scrollbar-hide pb-2">
           {filterPills.map((pill, index) => {
             const PillIcon = pill.icon;
             const isActive = activeFilter === index;
@@ -309,14 +309,14 @@ export default function Projects() {
               <button
                 key={pill.label}
                 onClick={() => setActiveFilter(index)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all duration-300 ${
+                className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-2 md:py-2.5 rounded-full border transition-all duration-300 whitespace-nowrap ${
                   isActive
                     ? "bg-white/10 border-white/30 text-white"
                     : "bg-transparent border-white/10 text-white/40 hover:text-white/60 hover:border-white/20"
                 }`}
               >
-                <PillIcon size={16} weight="fill" />
-                <span className="text-sm font-mono tracking-wide uppercase">
+                <PillIcon size={14} weight="fill" className="md:w-4 md:h-4" />
+                <span className="text-xs md:text-sm font-mono tracking-wide uppercase">
                   {pill.label}
                 </span>
               </button>
@@ -324,19 +324,19 @@ export default function Projects() {
           })}
         </div>
 
-        <p className="text-white/30 text-sm font-mono max-w-2xl mx-auto leading-relaxed">
+        <p className="text-white/30 text-xs md:text-sm font-mono max-w-2xl mx-auto leading-relaxed px-2">
           A collection of projects spanning freelance work, academic endeavors, and personal explorations — each representing a unique challenge and learning experience.
         </p>
       </div>
 
       {/* Projects Carousel */}
-      <div className="relative z-10 w-full px-20">
+      <div className="relative z-10 w-full px-4 md:px-8 lg:px-20">
         <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex gap-6">
+          <div className="flex gap-4 md:gap-6">
             {filteredProjects.map((project, index) => (
               <div
                 key={`${activeFilter}-${index}`}
-                className="flex-[0_0_100%] sm:flex-[0_0_75%] md:flex-[0_0_48%] lg:flex-[0_0_38%] min-w-0"
+                className="flex-[0_0_95%] sm:flex-[0_0_75%] md:flex-[0_0_48%] lg:flex-[0_0_38%] min-w-0"
               >
                 <ProjectCard project={project} />
               </div>
@@ -345,21 +345,21 @@ export default function Projects() {
         </div>
 
         {/* Navigation */}
-        <div className="flex items-center justify-center gap-6 mt-10">
+        <div className="flex items-center justify-center gap-4 md:gap-6 mt-6 md:mt-10">
           <button
             onClick={scrollPrev}
-            className="w-10 h-10 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
+            className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
           >
-            <CaretLeft size={16} weight="bold" />
+            <CaretLeft size={14} weight="bold" className="md:w-4 md:h-4" />
           </button>
 
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 md:gap-2">
             {scrollSnaps.map((_, i) => (
               <button
                 key={i}
                 onClick={() => scrollTo(i)}
-                className={`h-2 rounded-full transition-all ${
-                  selectedIndex === i ? "bg-white/70 w-6" : "bg-white/20 w-2 hover:bg-white/40"
+                className={`h-1.5 md:h-2 rounded-full transition-all ${
+                  selectedIndex === i ? "bg-white/70 w-4 md:w-6" : "bg-white/20 w-1.5 md:w-2 hover:bg-white/40"
                 }`}
               />
             ))}
@@ -367,15 +367,15 @@ export default function Projects() {
 
           <button
             onClick={scrollNext}
-            className="w-10 h-10 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
+            className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
           >
-            <CaretRight size={16} weight="bold" />
+            <CaretRight size={14} weight="bold" className="md:w-4 md:h-4" />
           </button>
         </div>
       </div>
 
       {/* Divider */}
-      <div className="relative z-10 mt-16 w-px h-16 bg-gradient-to-b from-white/10 to-transparent mx-auto" />
+      <div className="relative z-10 mt-8 md:mt-12 lg:mt-16 w-px h-12 md:h-16 bg-gradient-to-b from-white/10 to-transparent mx-auto" />
     </section>
   );
 }

@@ -120,22 +120,22 @@ export default function Achievements() {
   }, [emblaApi, onSelect]);
 
   return (
-    <section className="relative w-full bg-[#000000] py-24 overflow-hidden">
+    <section className="relative w-full bg-[#000000] py-12 md:py-16 lg:py-24 overflow-hidden">
 
       {/* Grid Background with Vignette */}
       <GridBackground />
 
       {/* Section Header */}
-      <div className="text-center mb-16 px-20">
+      <div className="text-center mb-8 md:mb-12 lg:mb-16 px-4 md:px-8 lg:px-20">
         <h2
-          className="text-white text-5xl font-light tracking-tight mb-8"
+          className="text-white text-3xl md:text-4xl lg:text-5xl font-light tracking-tight mb-4 md:mb-6 lg:mb-8"
           style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
         >
           Achievements
         </h2>
 
         {/* Filter Pills */}
-        <div className="flex items-center justify-center gap-3 mb-6">
+        <div className="flex items-center justify-center gap-2 md:gap-3 mb-4 md:mb-6 overflow-x-auto scrollbar-hide pb-2">
           {filterPills.map((pill, index) => {
             const PillIcon = pill.icon;
             const isActive = activeFilter === index;
@@ -143,14 +143,14 @@ export default function Achievements() {
               <button
                 key={pill.label}
                 onClick={() => setActiveFilter(index)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all duration-300 ${
+                className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-2 md:py-2.5 rounded-full border transition-all duration-300 whitespace-nowrap ${
                   isActive
                     ? "bg-white/10 border-white/30 text-white"
                     : "bg-transparent border-white/10 text-white/40 hover:text-white/60 hover:border-white/20"
                 }`}
               >
-                <PillIcon size={16} weight="fill" />
-                <span className="text-sm font-mono tracking-wide uppercase">
+                <PillIcon size={14} weight="fill" className="md:w-4 md:h-4" />
+                <span className="text-xs md:text-sm font-mono tracking-wide uppercase">
                   {pill.label}
                 </span>
               </button>
@@ -158,19 +158,19 @@ export default function Achievements() {
           })}
         </div>
 
-        <p className="text-white/30 text-sm font-mono max-w-lg mx-auto leading-relaxed">
+        <p className="text-white/30 text-xs md:text-sm font-mono max-w-lg mx-auto leading-relaxed px-2">
           Highlights of recognition, leadership, and contributions throughout my academic journey.
         </p>
       </div>
 
       {/* Carousel */}
-      <div className="w-full px-20">
+      <div className="w-full px-4 md:px-8 lg:px-20">
         <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex gap-6">
+          <div className="flex gap-4 md:gap-6">
             {filteredAchievements.map((item, index) => {
               const Icon = item.icon;
               return (
-                <div key={`${activeFilter}-${index}`} className="flex-[0_0_80%] md:flex-[0_0_45%] lg:flex-[0_0_40%] min-w-0">
+                <div key={`${activeFilter}-${index}`} className="flex-[0_0_90%] sm:flex-[0_0_80%] md:flex-[0_0_45%] lg:flex-[0_0_40%] min-w-0">
                   <BorderGlow
                     edgeSensitivity={30}
                     glowColor="0 0 100"
@@ -182,14 +182,14 @@ export default function Achievements() {
                     animated={false}
                     colors={["#ffffff", "#ffffff", "#ffffff"]}
                   >
-                    <div className="p-8 flex flex-col h-[380px]">
+                    <div className="p-4 md:p-6 lg:p-8 flex flex-col" style={{ minHeight: "320px", height: "auto" }}>
                       {/* Header with Icon */}
-                      <div className="flex items-center gap-4 mb-6">
-                        <div className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.02] shrink-0">
-                          <Icon size={24} weight="fill" color="rgba(255,255,255,0.6)" />
+                      <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
+                        <div className="w-10 h-10 md:w-14 md:h-14 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.02] shrink-0">
+                          <Icon size={20} weight="fill" color="rgba(255,255,255,0.6)" className="md:w-6 md:h-6" />
                         </div>
                         <h3
-                          className="text-white text-xl font-light"
+                          className="text-white text-lg md:text-xl font-light"
                           style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
                         >
                           {item.title}
@@ -198,26 +198,26 @@ export default function Achievements() {
 
                       {/* Description - Justified */}
                       <p
-                        className="text-white/40 text-sm font-mono leading-[1.9] text-justify mb-6"
+                        className="text-white/40 text-xs md:text-sm font-mono leading-relaxed md:leading-[1.9] text-justify mb-4 md:mb-6"
                       >
                         {item.description}
                       </p>
 
                       {/* Highlight Pills */}
                       <div className="mt-auto">
-                        <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-white/20 block mb-3">
+                        <span className="text-[9px] md:text-[10px] font-mono uppercase tracking-[0.15em] text-white/20 block mb-2 md:mb-3">
                           Highlights
                         </span>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-1.5 md:gap-2">
                           {item.highlights.map((highlight, i) => {
                             const HighlightIcon = highlight.icon;
                             return (
                               <span
                                 key={i}
-                                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03]"
+                                className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1 md:py-1.5 rounded-full border border-white/10 bg-white/[0.03]"
                               >
-                                <HighlightIcon size={12} weight="fill" color="rgba(255,255,255,0.5)" />
-                                <span className="text-xs font-mono tracking-wide text-white/50">
+                                <HighlightIcon size={10} weight="fill" color="rgba(255,255,255,0.5)" className="md:w-3 md:h-3" />
+                                <span className="text-[10px] md:text-xs font-mono tracking-wide text-white/50">
                                   {highlight.label}
                                 </span>
                               </span>
@@ -234,21 +234,21 @@ export default function Achievements() {
         </div>
 
         {/* Navigation */}
-        <div className="flex items-center justify-center gap-6 mt-10">
+        <div className="flex items-center justify-center gap-4 md:gap-6 mt-6 md:mt-10">
           <button
             onClick={scrollPrev}
-            className="w-10 h-10 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
+            className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
           >
-            <CaretLeft size={16} weight="bold" />
+            <CaretLeft size={14} weight="bold" className="md:w-4 md:h-4" />
           </button>
 
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 md:gap-2">
             {scrollSnaps.map((_, i) => (
               <button
                 key={i}
                 onClick={() => scrollTo(i)}
-                className={`h-2 rounded-full transition-all ${
-                  selectedIndex === i ? "bg-white/70 w-6" : "bg-white/20 w-2 hover:bg-white/40"
+                className={`h-1.5 md:h-2 rounded-full transition-all ${
+                  selectedIndex === i ? "bg-white/70 w-4 md:w-6" : "bg-white/20 w-1.5 md:w-2 hover:bg-white/40"
                 }`}
               />
             ))}
@@ -256,15 +256,15 @@ export default function Achievements() {
 
           <button
             onClick={scrollNext}
-            className="w-10 h-10 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
+            className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
           >
-            <CaretRight size={16} weight="bold" />
+            <CaretRight size={14} weight="bold" className="md:w-4 md:h-4" />
           </button>
         </div>
       </div>
 
       {/* Divider */}
-      <div className="mt-16 w-px h-16 bg-gradient-to-b from-white/10 to-transparent mx-auto" />
+      <div className="mt-8 md:mt-12 lg:mt-16 w-px h-12 md:w-px md:h-16 bg-gradient-to-b from-white/10 to-transparent mx-auto" />
     </section>
   );
 }

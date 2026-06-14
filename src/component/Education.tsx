@@ -114,17 +114,17 @@ export default function Education() {
   };
 
   return (
-    <section className="relative w-full min-h-screen bg-[#000000] flex flex-col items-center justify-center px-16 py-20">
+    <section className="relative w-full min-h-screen bg-[#000000] flex flex-col items-center justify-center px-4 md:px-8 lg:px-16 py-12 md:py-16 lg:py-20">
       {/* Title */}
       <h2
-        className="text-white text-6xl font-light tracking-tight mb-8"
+        className="text-white text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light tracking-tight mb-6 md:mb-8"
         style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
       >
         Education
       </h2>
 
       {/* Filter Pills */}
-      <div className="flex items-center justify-center gap-3 mb-6">
+      <div className="flex items-center justify-center gap-2 md:gap-3 mb-4 md:mb-6 overflow-x-auto scrollbar-hide pb-2">
         {filterPills.map((pill, index) => {
           const PillIcon = pill.icon;
           const isActive = activeFilter === index;
@@ -135,14 +135,14 @@ export default function Education() {
                 setActiveFilter(index);
                 emblaApi?.scrollTo(index);
               }}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all duration-300 ${
+              className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-2 md:py-2.5 rounded-full border transition-all duration-300 whitespace-nowrap ${
                 isActive
                   ? "bg-white/10 border-white/30 text-white"
                   : "bg-transparent border-white/10 text-white/40 hover:text-white/60 hover:border-white/20"
               }`}
             >
-              <PillIcon size={16} weight="fill" />
-              <span className="text-sm font-mono tracking-wide uppercase">
+              <PillIcon size={14} weight="fill" className="md:w-4 md:h-4" />
+              <span className="text-xs md:text-sm font-mono tracking-wide uppercase">
                 {pill.label}
               </span>
             </button>
@@ -152,14 +152,14 @@ export default function Education() {
 
       {/* Description */}
       <p
-        className="text-white/40 text-sm font-mono text-center max-w-2xl mb-12"
+        className="text-white/40 text-xs md:text-sm font-mono text-center max-w-2xl mb-8 md:mb-12 px-2"
       >
         A learning journey from high school to college, developing skills, discipline, and passion for technology and modern digital solutions.
       </p>
 
       {/* Carousel */}
       <div className="w-full overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-8">
+        <div className="flex gap-4 md:gap-8">
           {educationData.map((item, index) => {
             const DegreeIcon = degreeIcons[index];
             const BadgeIcon = item.badgeIcon;
@@ -172,12 +172,12 @@ export default function Education() {
                 className="flex-[0_0_100%] md:flex-[0_0_48%] lg:flex-[0_0_45%] min-w-0"
               >
                 <div
-                  className={`border border-white/10 rounded-2xl p-8 transition-all duration-300 relative flex flex-col ${
+                  className={`border border-white/10 rounded-2xl p-4 md:p-6 lg:p-8 transition-all duration-300 relative flex flex-col ${
                     selectedIndex === index
                       ? "bg-white/5 border-white/20"
                       : "bg-transparent"
                   }`}
-                  style={{ height: "380px" }}
+                  style={{ minHeight: "320px", height: "auto" }}
                 >
                   {/* Badge */}
                   {item.badge && (
@@ -216,21 +216,21 @@ export default function Education() {
                   )}
 
                   {/* Year + Icon */}
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-white/40 text-sm font-mono tracking-wider uppercase">
+                  <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                    <span className="text-white/40 text-xs md:text-sm font-mono tracking-wider uppercase">
                       {item.year}
                     </span>
-                    <DegreeIcon size={18} weight="duotone" color="#ffffff66" />
+                    <DegreeIcon size={16} weight="duotone" color="#ffffff66" className="md:w-[18px] md:h-[18px]" />
                   </div>
 
                   <h3
-                    className="text-white text-2xl font-light mb-2"
+                    className="text-white text-lg md:text-xl lg:text-2xl font-light mb-1 md:mb-2"
                     style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
                   >
                     {item.degree}
                   </h3>
                   <p
-                    className="text-white/60 text-base font-light mb-4"
+                    className="text-white/60 text-sm md:text-base font-light mb-3 md:mb-4"
                     style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
                   >
                     {item.school}
@@ -238,27 +238,28 @@ export default function Education() {
 
                   {/* Awards Section */}
                   {hasAwards && (
-                    <div className="mt-4 pt-4 border-t border-white/10">
+                    <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-white/10">
                       <p
-                        className="text-white/30 text-[10px] font-mono uppercase tracking-widest mb-3"
+                        className="text-white/30 text-[9px] md:text-[10px] font-mono uppercase tracking-widest mb-2 md:mb-3"
                       >
                         Awards & Achievements
                       </p>
-                      <div className="overflow-y-auto max-h-[140px] pr-2 custom-scrollbar">
+                      <div className="overflow-y-auto max-h-[100px] md:max-h-[140px] pr-2 custom-scrollbar">
                         {item.awards.map((award, i) => {
                           const AwardIcon = award.icon;
                           return (
                             <div
                               key={i}
-                              className="flex items-center gap-2.5 py-1.5"
+                              className="flex items-center gap-2 md:gap-2.5 py-1 md:py-1.5"
                             >
                               <AwardIcon
-                                size={14}
+                                size={12}
                                 weight="fill"
                                 color={award.gold ? "#eab308" : "#ffffff44"}
+                                className="md:w-3.5 md:h-3.5"
                               />
                               <span
-                                className="text-xs font-mono"
+                                className="text-[10px] md:text-xs font-mono"
                                 style={{
                                   color: award.gold ? "#eab308" : "rgba(255,255,255,0.5)",
                                 }}
@@ -279,7 +280,7 @@ export default function Education() {
       </div>
 
       {/* Custom Scrollbar */}
-      <div className="w-full mt-12 px-16">
+      <div className="w-full mt-8 md:mt-12 px-4 md:px-8 lg:px-16">
         <div
           ref={trackRef}
           onClick={handleScrollbarClick}
@@ -290,16 +291,16 @@ export default function Education() {
             style={{ width: `${scrollProgress}%` }}
           />
           <div
-            className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-            style={{ left: `calc(${scrollProgress}% - 8px)` }}
+            className="absolute top-1/2 -translate-y-1/2 w-3 h-3 md:w-4 md:h-4 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            style={{ left: `calc(${scrollProgress}% - 6px)` }}
           />
         </div>
-        <div className="flex justify-between mt-4">
+        <div className="flex justify-between mt-3 md:mt-4">
           {educationData.map((item, index) => (
             <button
               key={index}
               onClick={() => emblaApi?.scrollTo(index)}
-              className={`text-xs font-mono tracking-wider transition-colors duration-200 ${
+              className={`text-[10px] md:text-xs font-mono tracking-wider transition-colors duration-200 ${
                 selectedIndex === index
                   ? "text-white"
                   : "text-white/30 hover:text-white/60"

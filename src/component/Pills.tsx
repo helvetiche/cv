@@ -9,7 +9,7 @@ const pills = [
 
 export default function Pills() {
   return (
-    <div className="flex gap-4 mt-6">
+    <div className="flex flex-wrap gap-2 md:gap-4 mt-4 md:mt-6">
       {pills.map(({ label, icon: Icon }) => (
         <BorderGlow
           key={label}
@@ -23,10 +23,10 @@ export default function Pills() {
           animated={false}
           colors={['#c084fc', '#f472b6', '#38bdf8']}
         >
-          <div style={{ padding: '0.5em 1.5em', display: 'flex', alignItems: 'center', gap: '0.5em' }}>
-            <Icon size={16} weight="fill" color="#ffffff" />
+          <div style={{ padding: '0.4em 1em', display: 'flex', alignItems: 'center', gap: '0.5em' }} className="md:px-6 md:py-2">
+            <Icon size={14} weight="fill" color="#ffffff" />
             <span
-              className="text-white text-sm font-mono tracking-wide uppercase"
+              className="text-white text-xs md:text-sm font-mono tracking-wide uppercase"
             >
               {label}
             </span>

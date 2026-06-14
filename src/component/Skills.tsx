@@ -74,27 +74,27 @@ const skillCategories = [
 
 export default function Skills() {
   return (
-    <section className="relative w-full bg-[#000000] py-24 overflow-hidden">
+    <section className="relative w-full bg-[#000000] py-12 md:py-16 lg:py-24 overflow-hidden">
       {/* Grid Background */}
       <GridBackground />
 
       {/* Content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-20">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 lg:px-20">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-8 md:mb-12 lg:mb-16">
           <h2
-            className="text-white text-5xl font-light tracking-tight mb-6"
+            className="text-white text-3xl md:text-4xl lg:text-5xl font-light tracking-tight mb-4 md:mb-6"
             style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
           >
             Skills & Technologies
           </h2>
-          <p className="text-white/30 text-sm font-mono max-w-lg mx-auto leading-relaxed">
+          <p className="text-white/30 text-xs md:text-sm font-mono max-w-lg mx-auto leading-relaxed px-2">
             Technologies and tools I work with to bring ideas to life.
           </p>
         </div>
 
         {/* Skills Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 md:gap-3 lg:gap-4">
           {skills.map((skill, index) => {
             const Icon = skill.icon;
             return (
@@ -110,9 +110,9 @@ export default function Skills() {
                 animated={false}
                 colors={["#ffffff", "#ffffff", "#ffffff"]}
               >
-                <div className="p-4 flex flex-col items-center justify-center gap-3 min-h-[100px]">
-                  <Icon size={28} weight="duotone" color="rgba(255,255,255,0.5)" />
-                  <span className="text-white/60 text-xs font-mono tracking-wide text-center">
+                <div className="p-3 md:p-4 flex flex-col items-center justify-center gap-2 md:gap-3 min-h-[80px] md:min-h-[100px]">
+                  <Icon size={24} weight="duotone" color="rgba(255,255,255,0.5)" className="md:w-7 md:h-7" />
+                  <span className="text-white/60 text-[10px] md:text-xs font-mono tracking-wide text-center">
                     {skill.name}
                   </span>
                 </div>
@@ -123,7 +123,7 @@ export default function Skills() {
       </div>
 
       {/* Divider */}
-      <div className="relative z-10 mt-16 w-px h-16 bg-gradient-to-b from-white/10 to-transparent mx-auto" />
+      <div className="relative z-10 mt-8 md:mt-12 lg:mt-16 w-px h-12 md:h-16 bg-gradient-to-b from-white/10 to-transparent mx-auto" />
     </section>
   );
 }

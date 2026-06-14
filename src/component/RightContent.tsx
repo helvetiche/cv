@@ -10,22 +10,22 @@ const socials = [
 
 export default function RightContent() {
   return (
-    <div className="absolute bottom-8 right-8 z-30 max-w-[40%] text-right">
+    <div className="absolute bottom-4 right-4 md:bottom-8 md:right-8 z-30 max-w-full md:max-w-[40%] text-center md:text-right">
       <p
-        className="text-white/70 text-lg font-light leading-relaxed"
+        className="text-white/70 text-sm md:text-lg font-light leading-relaxed"
         style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
       >
         Open for Work — Ready to contribute through AI, cloud computing, system integration, and scalable digital solutions with real impact.
       </p>
-      <div className="flex items-center justify-end gap-4 mt-6">
+      <div className="flex items-center justify-center md:justify-end gap-3 md:gap-4 mt-4 md:mt-6">
         {socials.map(({ icon: Icon, label, href }) => (
           <a
             key={label}
             href={href}
             aria-label={label}
-            className="text-white/60 hover:text-white transition-colors"
+            className="text-white/60 hover:text-white transition-colors p-2"
           >
-            <Icon size={24} weight="fill" />
+            <Icon size={20} weight="fill" className="md:w-6 md:h-6" />
           </a>
         ))}
         <div className="relative inline-flex">
@@ -42,15 +42,16 @@ export default function RightContent() {
           >
             <a
               href="#"
-              style={{ padding: '0.5em 1.5em', display: 'flex', alignItems: 'center', gap: '0.5em' }}
+              style={{ padding: '0.4em 1em', display: 'flex', alignItems: 'center', gap: '0.5em' }}
+              className="md:px-6 md:py-2"
             >
-              <DownloadSimple size={16} weight="fill" color="#ffffff" />
-              <span className="text-white text-sm font-mono tracking-wide uppercase">
+              <DownloadSimple size={14} weight="fill" color="#ffffff" className="md:w-4 md:h-4" />
+              <span className="text-white text-xs md:text-sm font-mono tracking-wide uppercase">
                 Download Resume
               </span>
             </a>
           </BorderGlow>
-          <span className="absolute -top-2 -right-2 bg-red-500/80 text-white text-[10px] font-mono px-2 py-0.5 rounded-full">
+          <span className="absolute -top-2 -right-2 bg-red-500/80 text-white text-[9px] md:text-[10px] font-mono px-1.5 py-0.5 md:px-2 rounded-full">
             Open for Work
           </span>
         </div>

@@ -238,17 +238,17 @@ function TimelineCard({ item, index, isLast }: { item: ExperienceItem; index: nu
   const Icon = item.icon;
 
   return (
-    <article className="relative flex group">
+    <article className="relative flex flex-col md:flex-row group">
       {/* ---- TIMELINE DOT & LINE (Far Left) ---- */}
-      <div className="flex flex-col items-center pl-20 pr-10 relative">
-        <div className="relative z-10 flex items-center justify-center w-11 h-11 rounded-full border border-white/20 bg-[#000000] transition-all duration-300 group-hover:scale-110 group-hover:border-white/50">
-          <Icon size={18} weight="fill" color="rgba(255,255,255,0.8)" />
+      <div className="flex flex-col items-center pl-4 md:pl-8 lg:pl-20 pr-4 md:pr-6 lg:pr-10 relative">
+        <div className="relative z-10 flex items-center justify-center w-9 h-9 md:w-11 md:h-11 rounded-full border border-white/20 bg-[#000000] transition-all duration-300 group-hover:scale-110 group-hover:border-white/50">
+          <Icon size={16} weight="fill" color="rgba(255,255,255,0.8)" className="md:w-[18px] md:h-[18px]" />
         </div>
 
       </div>
 
-      {/* ---- CARD CONTENT (50/50 Split) ---- */}
-      <div className="flex-1 pr-20 pb-12">
+      {/* ---- CARD CONTENT (50/50 Split on desktop, stacked on mobile) ---- */}
+      <div className="flex-1 pr-4 md:pr-8 lg:pr-20 pb-8 md:pb-12">
         <BorderGlow
           edgeSensitivity={30}
           glowColor="0 0 100"
@@ -260,48 +260,48 @@ function TimelineCard({ item, index, isLast }: { item: ExperienceItem; index: nu
           animated={false}
           colors={["#ffffff", "#ffffff", "#ffffff"]}
         >
-          <div className="flex min-h-[340px]">
-            {/* ======== LEFT SIDE: Info (50%) ======== */}
-            <div className="w-1/2 p-10 flex flex-col">
+          <div className="flex flex-col md:flex-row min-h-[280px] md:min-h-[340px]">
+            {/* ======== LEFT SIDE: Info (50% on desktop, full on mobile) ======== */}
+            <div className="w-full md:w-1/2 p-4 md:p-6 lg:p-10 flex flex-col">
               {/* Period */}
-              <header className="mb-8">
-                <div className="flex items-center gap-2 mb-4">
-                  <Calendar size={14} weight="fill" color="rgba(255,255,255,0.4)" />
-                  <time className="text-sm font-mono tracking-widest uppercase text-white/40">
+              <header className="mb-4 md:mb-6 lg:mb-8">
+                <div className="flex items-center gap-2 mb-2 md:mb-4">
+                  <Calendar size={12} weight="fill" color="rgba(255,255,255,0.4)" className="md:w-3.5 md:h-3.5" />
+                  <time className="text-xs md:text-sm font-mono tracking-widest uppercase text-white/40">
                     {item.year}
                   </time>
                 </div>
                 <h3
-                  className="text-white text-3xl font-light leading-tight mb-2"
+                  className="text-white text-xl md:text-2xl lg:text-3xl font-light leading-tight mb-1 md:mb-2"
                   style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
                 >
                   {item.title}
                 </h3>
-                <p className="text-white/40 text-base font-mono tracking-wide">
+                <p className="text-white/40 text-sm md:text-base font-mono tracking-wide">
                   {item.company}
                 </p>
               </header>
 
               {/* Description */}
               <p
-                className="text-white/50 text-lg leading-[1.8] mb-8"
+                className="text-white/50 text-sm md:text-base lg:text-lg leading-relaxed md:leading-[1.8] mb-4 md:mb-6 lg:mb-8"
                 style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
               >
                 {item.description}
               </p>
 
               {/* Responsibilities */}
-              <div className="mb-8">
-                <div className="flex items-center gap-2 mb-4">
-                  <ListChecks size={13} weight="fill" color="rgba(255,255,255,0.3)" />
-                  <span className="text-xs font-mono uppercase tracking-[0.15em] text-white/30">
+              <div className="mb-4 md:mb-6 lg:mb-8">
+                <div className="flex items-center gap-2 mb-3 md:mb-4">
+                  <ListChecks size={12} weight="fill" color="rgba(255,255,255,0.3)" className="md:w-3.5 md:h-3.5" />
+                  <span className="text-[10px] md:text-xs font-mono uppercase tracking-[0.15em] text-white/30">
                     Responsibilities
                   </span>
                 </div>
-                <ul className="space-y-3">
+                <ul className="space-y-2 md:space-y-3">
                   {(isExpanded ? item.responsibilities : item.responsibilities.slice(0, 2)).map(
                     (resp, i) => (
-                      <li key={i} className="flex items-start gap-3 text-white/45 text-base font-mono leading-relaxed">
+                      <li key={i} className="flex items-start gap-2 md:gap-3 text-white/45 text-xs md:text-sm lg:text-base font-mono leading-relaxed">
                         <span className="text-white/20 mt-0.5 shrink-0">▹</span>
                         <span>{resp}</span>
                       </li>
@@ -311,7 +311,7 @@ function TimelineCard({ item, index, isLast }: { item: ExperienceItem; index: nu
                 {item.responsibilities.length > 2 && (
                   <button
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="mt-4 text-xs font-mono uppercase tracking-widest text-white/35 hover:text-white/55 transition-colors"
+                    className="mt-3 md:mt-4 text-[10px] md:text-xs font-mono uppercase tracking-widest text-white/35 hover:text-white/55 transition-colors"
                   >
                     {isExpanded ? "Show less" : `+${item.responsibilities.length - 2} more`}
                   </button>
@@ -320,14 +320,14 @@ function TimelineCard({ item, index, isLast }: { item: ExperienceItem; index: nu
 
               {/* Technologies */}
               <footer className="mt-auto">
-                <span className="text-xs font-mono uppercase tracking-[0.15em] text-white/25 block mb-3">
+                <span className="text-[10px] md:text-xs font-mono uppercase tracking-[0.15em] text-white/25 block mb-2 md:mb-3">
                   Technologies
                 </span>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5 md:gap-2">
                   {item.technologies.map((tech, i) => (
                     <span
                       key={i}
-                      className="px-3 py-1.5 rounded-full text-xs font-mono tracking-wide border border-white/10 text-white/40 bg-white/[0.03]"
+                      className="px-2 md:px-3 py-1 md:py-1.5 rounded-full text-[10px] md:text-xs font-mono tracking-wide border border-white/10 text-white/40 bg-white/[0.03]"
                     >
                       {tech}
                     </span>
@@ -336,8 +336,8 @@ function TimelineCard({ item, index, isLast }: { item: ExperienceItem; index: nu
               </footer>
             </div>
 
-            {/* ======== RIGHT SIDE: Carousel (50%) ======== */}
-            <div className="w-1/2 p-6 flex items-center">
+            {/* ======== RIGHT SIDE: Carousel (50% on desktop, full on mobile) ======== */}
+            <div className="w-full md:w-1/2 p-3 md:p-4 lg:p-6 flex items-center">
               <ImageCarousel images={item.images} />
             </div>
           </div>
@@ -360,7 +360,7 @@ export default function Experience() {
       : experienceData.filter((item) => item.category === "leadership");
 
   return (
-    <section className="relative w-full min-h-screen py-24 overflow-hidden">
+    <section className="relative w-full min-h-screen py-12 md:py-16 lg:py-24 overflow-hidden">
 
       {/* Base Background Color */}
       <div className="absolute inset-0 bg-[#000000] z-0" />
@@ -374,16 +374,16 @@ export default function Experience() {
       <div className="relative z-10">
 
       {/* Section Header */}
-      <header className="mb-20 text-center">
+      <header className="mb-10 md:mb-16 lg:mb-20 text-center px-4 md:px-8">
         <h2
-          className="text-white text-6xl font-light tracking-tight mb-8"
+          className="text-white text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light tracking-tight mb-4 md:mb-6 lg:mb-8"
           style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
         >
           Experience
         </h2>
 
         {/* Filter Pills */}
-        <div className="flex items-center justify-center gap-3 mb-6">
+        <div className="flex items-center justify-center gap-2 md:gap-3 mb-4 md:mb-6 overflow-x-auto scrollbar-hide pb-2">
           {filterPills.map((pill, index) => {
             const PillIcon = pill.icon;
             const isActive = activeFilter === index;
@@ -391,14 +391,14 @@ export default function Experience() {
               <button
                 key={pill.label}
                 onClick={() => setActiveFilter(index)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all duration-300 ${
+                className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-2 md:py-2.5 rounded-full border transition-all duration-300 whitespace-nowrap ${
                   isActive
                     ? "bg-white/10 border-white/30 text-white"
                     : "bg-transparent border-white/10 text-white/40 hover:text-white/60 hover:border-white/20"
                 }`}
               >
-                <PillIcon size={16} weight="fill" />
-                <span className="text-sm font-mono tracking-wide uppercase">
+                <PillIcon size={14} weight="fill" className="md:w-4 md:h-4" />
+                <span className="text-xs md:text-sm font-mono tracking-wide uppercase">
                   {pill.label}
                 </span>
               </button>
@@ -406,7 +406,7 @@ export default function Experience() {
           })}
         </div>
 
-        <p className="text-white/25 text-sm font-mono max-w-2xl mx-auto leading-relaxed">
+        <p className="text-white/25 text-xs md:text-sm font-mono max-w-2xl mx-auto leading-relaxed px-2">
           A timeline of professional growth, leadership roles, and creative endeavors — from freelance development and internships to student organization leadership and film production.
         </p>
       </header>

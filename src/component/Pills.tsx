@@ -9,7 +9,7 @@ const pills = [
 
 export default function Pills() {
   return (
-    <div className="flex flex-wrap gap-2 md:gap-4 mt-4 md:mt-6">
+    <div className="flex flex-nowrap gap-2 md:gap-4 mt-4 md:mt-6">
       {pills.map(({ label, icon: Icon }) => (
         <BorderGlow
           key={label}

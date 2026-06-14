@@ -10,7 +10,7 @@ const socials = [
 
 export default function RightContent() {
   return (
-    <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-auto md:right-8 z-30 max-w-full md:max-w-[40%] text-center md:text-right">
+    <div className="relative z-30 max-w-full md:max-w-[40%] text-center md:text-right mt-6 md:mt-0">
       <p
         className="text-white/70 text-sm md:text-lg font-light leading-relaxed"
         style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
@@ -47,7 +47,7 @@ export default function RightContent() {
             >
               <DownloadSimple size={14} weight="fill" color="#ffffff" className="md:w-4 md:h-4" />
               <span className="text-white text-xs md:text-sm font-mono tracking-wide uppercase">
-                Download Resume
+                Resume
               </span>
             </a>
           </BorderGlow>

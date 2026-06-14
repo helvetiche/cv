@@ -240,7 +240,7 @@ function TimelineCard({ item, index, isLast }: { item: ExperienceItem; index: nu
   return (
     <article className="relative flex flex-col md:flex-row group">
       {/* ---- TIMELINE DOT & LINE (Far Left) ---- */}
-      <div className="flex flex-col items-center pl-4 md:pl-8 lg:pl-20 pr-4 md:pr-6 lg:pr-10 relative">
+      <div className="flex flex-col items-center pl-2 md:pl-4 lg:pl-8 pr-4 md:pr-6 lg:pr-10 relative">
         <div className="relative z-10 flex items-center justify-center w-9 h-9 md:w-11 md:h-11 rounded-full border border-white/20 bg-[#000000] transition-all duration-300 group-hover:scale-110 group-hover:border-white/50">
           <Icon size={16} weight="fill" color="rgba(255,255,255,0.8)" className="md:w-[18px] md:h-[18px]" />
         </div>
@@ -248,7 +248,7 @@ function TimelineCard({ item, index, isLast }: { item: ExperienceItem; index: nu
       </div>
 
       {/* ---- CARD CONTENT (50/50 Split on desktop, stacked on mobile) ---- */}
-      <div className="flex-1 pr-4 md:pr-8 lg:pr-20 pb-8 md:pb-12">
+      <div className="flex-1 pr-2 md:pr-4 lg:pr-8 pb-8 md:pb-12">
         <BorderGlow
           edgeSensitivity={30}
           glowColor="0 0 100"
@@ -262,7 +262,7 @@ function TimelineCard({ item, index, isLast }: { item: ExperienceItem; index: nu
         >
           <div className="flex flex-col md:flex-row min-h-[280px] md:min-h-[340px]">
             {/* ======== LEFT SIDE: Info (50% on desktop, full on mobile) ======== */}
-            <div className="w-full md:w-1/2 p-4 md:p-6 lg:p-10 flex flex-col">
+            <div className="w-full md:w-1/2 p-3 md:p-4 lg:p-6 flex flex-col">
               {/* Period */}
               <header className="mb-4 md:mb-6 lg:mb-8">
                 <div className="flex items-center gap-2 mb-2 md:mb-4">
@@ -360,7 +360,7 @@ export default function Experience() {
       : experienceData.filter((item) => item.category === "leadership");
 
   return (
-    <section className="relative w-full min-h-screen py-12 md:py-16 lg:py-24 overflow-hidden">
+    <section className="relative w-full min-h-screen py-12 md:py-16 lg:py-24 overflow-x-hidden">
 
       {/* Base Background Color */}
       <div className="absolute inset-0 bg-[#000000] z-0" />

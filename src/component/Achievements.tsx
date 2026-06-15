@@ -92,7 +92,7 @@ const achievements = [
 
 export default function Achievements() {
   const [activeFilter, setActiveFilter] = useState(0);
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "start", containScroll: "trimSnaps" });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
@@ -170,7 +170,7 @@ export default function Achievements() {
             {filteredAchievements.map((item, index) => {
               const Icon = item.icon;
               return (
-                <div key={`${activeFilter}-${index}`} className="flex-[0_0_90%] sm:flex-[0_0_80%] md:flex-[0_0_45%] lg:flex-[0_0_40%] min-w-0">
+                <div key={`${activeFilter}-${index}`} className="flex-[0_0_90%] sm:flex-[0_0_80%] md:flex-[0_0_45%] lg:flex-[0_0_40%] min-w-0 self-stretch">
                   <BorderGlow
                     edgeSensitivity={30}
                     glowColor="0 0 100"
@@ -181,8 +181,9 @@ export default function Achievements() {
                     coneSpread={25}
                     animated={false}
                     colors={["#ffffff", "#ffffff", "#ffffff"]}
+                    className="h-full"
                   >
-                    <div className="p-4 md:p-6 lg:p-8 flex flex-col" style={{ minHeight: "320px", height: "auto" }}>
+                    <div className="p-4 md:p-6 lg:p-8 flex flex-col h-full min-h-[320px] md:min-h-[340px]">
                       {/* Header with Icon */}
                       <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
                         <div className="w-10 h-10 md:w-14 md:h-14 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.02] shrink-0">
@@ -196,15 +197,15 @@ export default function Achievements() {
                         </h3>
                       </div>
 
-                      {/* Description - Justified */}
+                      {/* Description - scrollable if too long */}
                       <p
-                        className="text-white/40 text-xs md:text-sm font-mono leading-relaxed md:leading-[1.9] text-justify mb-4 md:mb-6"
+                        className="text-white/40 text-xs md:text-sm font-mono leading-relaxed md:leading-[1.9] text-justify mb-4 md:mb-6 overflow-y-auto scrollbar-hide flex-1"
                       >
                         {item.description}
                       </p>
 
                       {/* Highlight Pills */}
-                      <div className="mt-auto">
+                      <div className="mt-auto shrink-0">
                         <span className="text-[9px] md:text-[10px] font-mono uppercase tracking-[0.15em] text-white/20 block mb-2 md:mb-3">
                           Highlights
                         </span>

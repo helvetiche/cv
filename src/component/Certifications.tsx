@@ -66,7 +66,7 @@ const certifications: Certification[] = [
 ];
 
 export default function Certifications() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "center" });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "start", containScroll: "trimSnaps" });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
@@ -114,7 +114,7 @@ export default function Certifications() {
               {certifications.map((cert, index) => (
                 <div
                   key={index}
-                  className="flex-[0_0_90%] sm:flex-[0_0_80%] md:flex-[0_0_45%] lg:flex-[0_0_38%] min-w-0"
+                  className="flex-[0_0_90%] sm:flex-[0_0_80%] md:flex-[0_0_45%] lg:flex-[0_0_38%] min-w-0 self-stretch"
                 >
                   <BorderGlow
                     edgeSensitivity={30}
@@ -126,8 +126,9 @@ export default function Certifications() {
                     coneSpread={25}
                     animated={false}
                     colors={["#ffffff", "#ffffff", "#ffffff"]}
+                    className="h-full"
                   >
-                    <div className="p-4 md:p-6 lg:p-8 flex flex-col" style={{ minHeight: "240px", height: "auto" }}>
+                    <div className="p-4 md:p-6 lg:p-8 flex flex-col h-full min-h-[220px] md:min-h-[240px]">
                       {/* Header */}
                       <div className="flex items-start gap-3 md:gap-4 mb-4 md:mb-6">
                         <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.02] shrink-0">

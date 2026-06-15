@@ -193,7 +193,7 @@ export default function Certifications() {
                   key={i}
                   onClick={() => scrollTo(i)}
                   className={`h-1.5 md:h-2 rounded-full transition-all ${
-                    selectedIndex === i ? "bg-white/70 w-4 md:w-6" : "bg-white/20 w-1.5 md:w-2 hover:bg-white/40"
+                    selectedIndex === i ? "bg-white/70 w-3 md:w-4" : "bg-white/20 w-1 md:w-1.5 hover:bg-white/40"
                   }`}
                 />
               ))}

@@ -218,8 +218,8 @@ function ImageCarousel({ images }: { images: string[] }) {
             <button
               key={i}
               onClick={() => scrollTo(i)}
-              className={`h-1.5 rounded-full transition-all ${
-                selectedIndex === i ? "bg-white/70 w-4" : "bg-white/20 w-1.5 hover:bg-white/40"
+              className={`h-1 rounded-full transition-all ${
+                selectedIndex === i ? "bg-white/70 w-3" : "bg-white/20 w-1 hover:bg-white/40"
               }`}
             />
           ))}
@@ -370,7 +370,7 @@ export default function Experience() {
       </div>
 
       {/* Content Layer */}
-      <div className="relative z-10">
+      <div className="relative z-10 px-4 md:px-0">
 
       {/* Section Header */}
       <header className="mb-10 md:mb-16 lg:mb-20 text-center px-4 md:px-8">

@@ -160,14 +160,14 @@ function ProjectImageCarousel({ images, title }: { images: string[]; title: stri
         </div>
       </div>
 
-      {/* Dots indicator */}
+      {/* Dots indicator - hide on mobile if too many */}
       {images.length > 1 && (
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1 max-w-[60%] overflow-hidden">
           {images.map((_, i) => (
             <div
               key={i}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                selectedIndex === i ? "bg-white/80 w-4" : "bg-white/30 w-1.5"
+              className={`h-1 rounded-full transition-all duration-300 shrink-0 ${
+                selectedIndex === i ? "bg-white/80 w-3" : "bg-white/30 w-1"
               }`}
             />
           ))}
@@ -353,13 +353,13 @@ export default function Projects() {
             <CaretLeft size={14} weight="bold" className="md:w-4 md:h-4" />
           </button>
 
-          <div className="flex gap-1.5 md:gap-2">
+          <div className="flex gap-1 md:gap-1.5 max-w-[120px] md:max-w-none overflow-hidden">
             {scrollSnaps.map((_, i) => (
               <button
                 key={i}
                 onClick={() => scrollTo(i)}
-                className={`h-1.5 md:h-2 rounded-full transition-all ${
-                  selectedIndex === i ? "bg-white/70 w-4 md:w-6" : "bg-white/20 w-1.5 md:w-2 hover:bg-white/40"
+                className={`h-1 md:h-1.5 rounded-full transition-all shrink-0 ${
+                  selectedIndex === i ? "bg-white/70 w-2.5 md:w-3" : "bg-white/20 w-1 md:w-1.5 hover:bg-white/40"
                 }`}
               />
             ))}

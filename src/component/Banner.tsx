@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from 'react';
-import { Briefcase, House, Student, Briefcase as BriefcaseIcon, FolderOpen, Envelope, List } from '@phosphor-icons/react';
+import { useState, useEffect } from 'react';
+import { House, Student, Briefcase, Briefcase as BriefcaseIcon, FolderOpen, Envelope, List } from '@phosphor-icons/react';
 import BorderGlow from './BorderGlow';
 
 const navItems = [
@@ -12,8 +12,72 @@ const navItems = [
   { label: 'Contact', icon: Envelope },
 ];
 
+const NAME = "Nasche Del Ponso";
+const TAGLINE = "Open For Work";
+const TYPING_SPEED = 80;
+const DELETION_SPEED = 50;
+const PAUSE_DURATION = 2000;
+
 export default function Banner() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [displayText, setDisplayText] = useState('');
+  const [phase, setPhase] = useState<'typing-name' | 'pausing-name' | 'deleting-name' | 'typing-tagline' | 'pausing-tagline' | 'deleting-tagline'>('typing-name');
+  const [showCursor, setShowCursor] = useState(true);
+
+  // Blinking cursor
+  useEffect(() => {
+    const interval = setInterval(() => setShowCursor(v => !v), 530);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Typewriter logic (loops forever)
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout>;
+
+    switch (phase) {
+      case 'typing-name':
+        if (displayText.length < NAME.length) {
+          timeout = setTimeout(() => setDisplayText(NAME.slice(0, displayText.length + 1)), TYPING_SPEED);
+        } else {
+          timeout = setTimeout(() => setPhase('pausing-name'), PAUSE_DURATION);
+        }
+        break;
+
+      case 'pausing-name':
+        timeout = setTimeout(() => setPhase('deleting-name'), 500);
+        break;
+
+      case 'deleting-name':
+        if (displayText.length > 0) {
+          timeout = setTimeout(() => setDisplayText(displayText.slice(0, -1)), DELETION_SPEED);
+        } else {
+          timeout = setTimeout(() => setPhase('typing-tagline'), 300);
+        }
+        break;
+
+      case 'typing-tagline':
+        if (displayText.length < TAGLINE.length) {
+          timeout = setTimeout(() => setDisplayText(TAGLINE.slice(0, displayText.length + 1)), TYPING_SPEED);
+        } else {
+          timeout = setTimeout(() => setPhase('pausing-tagline'), PAUSE_DURATION);
+        }
+        break;
+
+      case 'pausing-tagline':
+        timeout = setTimeout(() => setPhase('deleting-tagline'), 500);
+        break;
+
+      case 'deleting-tagline':
+        if (displayText.length > 0) {
+          timeout = setTimeout(() => setDisplayText(displayText.slice(0, -1)), DELETION_SPEED);
+        } else {
+          timeout = setTimeout(() => setPhase('typing-name'), 300);
+        }
+        break;
+    }
+
+    return () => clearTimeout(timeout);
+  }, [phase, displayText]);
 
   return (
     <div className="fixed top-2 inset-x-2 md:top-6 md:inset-x-auto md:w-auto z-50 flex justify-end md:justify-center overflow-hidden">
@@ -29,12 +93,14 @@ export default function Banner() {
         colors={['#c084fc', '#f472b6', '#38bdf8']}
         className="w-full md:w-auto"
       >
-        <div style={{ padding: '0.5em 0.75em', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="md:px-6 md:py-3">
-          {/* Left: Open For Work badge - hidden on small mobile */}
-          <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
-            <Briefcase size={14} weight="fill" color="#ffffff" />
-            <span className="text-white text-xs md:text-sm font-mono tracking-wide uppercase">
-              Open For Work
+        <div style={{ padding: '0.5em 0.75em', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="md:px-6 md:py-2.5">
+
+          {/* Left: Name with typewriter effect */}
+          <div className="flex items-center gap-2 flex-shrink-0 min-w-[200px] md:min-w-[260px]">
+            <Briefcase size={14} weight="fill" color="#ffffff" className="shrink-0" />
+            <span className="text-white text-sm md:text-base font-mono tracking-tight">
+              {displayText}
+              <span className={`inline-block w-[2px] h-[1em] bg-white/70 ml-0.5 align-middle transition-opacity duration-100 ${showCursor ? 'opacity-100' : 'opacity-0'}`} />
             </span>
           </div>
 
@@ -53,10 +119,10 @@ export default function Banner() {
             ))}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu button - right side */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden text-white p-2 hover:opacity-80 transition-opacity"
+            className="md:hidden text-white p-2 hover:opacity-80 transition-opacity ml-auto"
           >
             <List size={20} weight="bold" />
           </button>
@@ -65,10 +131,6 @@ export default function Banner() {
         {/* Mobile dropdown menu */}
         {menuOpen && (
           <div className="md:hidden border-t border-white/10 px-4 pb-3 pt-2 space-y-1">
-            <div className="flex items-center gap-2 px-3 py-1 text-white/50 text-xs font-mono uppercase">
-              <Briefcase size={12} weight="fill" />
-              Open For Work
-            </div>
             {navItems.map(({ label, icon: Icon }) => (
               <div
                 key={label}

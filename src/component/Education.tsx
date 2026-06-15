@@ -79,8 +79,8 @@ const degreeIcons = [GraduationCap, Student, Student];
 
 const filterPills = [
   { label: "College", icon: GraduationCap },
-  { label: "Senior High School", icon: ChalkboardTeacher },
-  { label: "Junior High School", icon: Backpack },
+  { label: "SHS", icon: ChalkboardTeacher },
+  { label: "JHS", icon: Backpack },
 ];
 
 export default function Education() {
@@ -135,7 +135,7 @@ export default function Education() {
                 setActiveFilter(index);
                 emblaApi?.scrollTo(index);
               }}
-              className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-2 md:py-2.5 rounded-full border transition-all duration-300 whitespace-nowrap ${
+              className={`flex items-center gap-1 md:gap-1.5 px-2.5 md:px-4 py-1.5 md:py-2 rounded-full border transition-all duration-300 whitespace-nowrap ${
                 isActive
                   ? "bg-white/10 border-white/30 text-white"
                   : "bg-transparent border-white/10 text-white/40 hover:text-white/60 hover:border-white/20"

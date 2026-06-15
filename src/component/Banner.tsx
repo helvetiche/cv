@@ -80,7 +80,7 @@ export default function Banner() {
   }, [phase, displayText]);
 
   return (
-    <div className="fixed top-2 inset-x-2 md:top-6 md:inset-x-auto md:w-auto z-50 flex justify-end md:justify-center overflow-hidden">
+    <div className="fixed top-2 inset-x-2 md:top-6 md:left-1/2 md:-translate-x-1/2 z-50">
       <BorderGlow
         edgeSensitivity={30}
         glowColor="40 80 80"

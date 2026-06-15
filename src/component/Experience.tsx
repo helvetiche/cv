@@ -239,12 +239,11 @@ function TimelineCard({ item, index, isLast }: { item: ExperienceItem; index: nu
 
   return (
     <article className="relative flex flex-col md:flex-row group">
-      {/* ---- TIMELINE DOT & LINE (Far Left) ---- */}
-      <div className="flex flex-col items-center pl-2 md:pl-4 lg:pl-8 pr-4 md:pr-6 lg:pr-10 relative">
-        <div className="relative z-10 flex items-center justify-center w-9 h-9 md:w-11 md:h-11 rounded-full border border-white/20 bg-[#000000] transition-all duration-300 group-hover:scale-110 group-hover:border-white/50">
-          <Icon size={16} weight="fill" color="rgba(255,255,255,0.8)" className="md:w-[18px] md:h-[18px]" />
+      {/* ---- TIMELINE DOT & LINE (hidden on mobile) ---- */}
+      <div className="hidden md:flex flex-col items-center pl-4 lg:pl-8 pr-6 lg:pr-10 relative">
+        <div className="relative z-10 flex items-center justify-center w-11 h-11 rounded-full border border-white/20 bg-[#000000] transition-all duration-300 group-hover:scale-110 group-hover:border-white/50">
+          <Icon size={18} weight="fill" color="rgba(255,255,255,0.8)" />
         </div>
-
       </div>
 
       {/* ---- CARD CONTENT (50/50 Split on desktop, stacked on mobile) ---- */}

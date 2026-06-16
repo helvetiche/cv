@@ -11,7 +11,7 @@ export default function Name() {
       </h1>
       <Pills />
       <p
-        className="text-white/70 text-sm md:text-base font-light leading-relaxed mt-4 md:mt-6 text-justify font-mono"
+        className="text-white/90 md:text-white/70 text-sm md:text-base font-light leading-relaxed mt-4 md:mt-6 text-justify font-mono"
       >
         Junior Modern Technology Generalist specializing in integration, cloud computing, and artificial intelligence. I build scalable solutions that streamline processes and drive innovation across digital systems.
       </p>

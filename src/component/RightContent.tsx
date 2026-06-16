@@ -12,7 +12,7 @@ export default function RightContent() {
   return (
     <div className="relative z-30 max-w-full md:max-w-[40%] text-center md:text-right mt-6 md:mt-0">
       <p
-        className="text-white/70 text-sm md:text-lg font-light leading-relaxed"
+        className="text-white/90 md:text-white/70 text-sm md:text-lg font-light leading-relaxed"
         style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
       >
         Open for Work — Ready to contribute through AI, cloud computing, system integration, and scalable digital solutions with real impact.

@@ -35,7 +35,7 @@ export default function Hero() {
       <div className="relative z-10 w-full h-full" />
 
       {/* Mobile overlay to reduce background opacity */}
-      <div className="absolute inset-0 z-[5] bg-black/40 md:bg-transparent pointer-events-none" />
+      <div className="absolute inset-0 z-[4] bg-black/80 md:bg-transparent pointer-events-none" />
 
       <Fade />
       <Banner />

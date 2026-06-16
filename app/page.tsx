@@ -11,14 +11,30 @@ import Footer from "../src/component/Footer";
 export default function Home() {
   return (
     <>
-      <Hero />
-      <Education />
-      <Experience />
-      <Achievements />
-      <Projects />
-      <Skills />
-      <Certifications />
-      <Contact />
+      <section id="home">
+        <Hero />
+      </section>
+      <section id="education">
+        <Education />
+      </section>
+      <section id="experience">
+        <Experience />
+      </section>
+      <section id="achievements">
+        <Achievements />
+      </section>
+      <section id="projects">
+        <Projects />
+      </section>
+      <section id="skills">
+        <Skills />
+      </section>
+      <section id="certifications">
+        <Certifications />
+      </section>
+      <section id="contact">
+        <Contact />
+      </section>
       <Footer />
     </>
   );

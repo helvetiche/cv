@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, IBM_Plex_Serif } from "next/font/google";
+import { MotionBlurProvider } from "./MotionBlurProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -33,7 +34,9 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${ibmPlexSerif.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-black overflow-x-hidden">{children}</body>
+      <body className="min-h-full flex flex-col bg-black overflow-x-hidden">
+        <MotionBlurProvider>{children}</MotionBlurProvider>
+      </body>
     </html>
   );
 }

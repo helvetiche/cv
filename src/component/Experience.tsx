@@ -172,10 +172,13 @@ function ImageCarousel({ images }: { images: string[] }) {
 
   useEffect(() => {
     if (!emblaApi) return;
-    onSelect();
     setScrollSnaps(emblaApi.scrollSnapList());
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", onSelect);
+    return () => {
+      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onSelect);
+    };
   }, [emblaApi, onSelect]);
 
   return (
@@ -233,7 +236,7 @@ function ImageCarousel({ images }: { images: string[] }) {
    COMPONENT - Timeline Card
    Left Side: Info | Right Side: Carousel
    ============================================ */
-function TimelineCard({ item, index, isLast }: { item: ExperienceItem; index: number; isLast: boolean }) {
+function TimelineCard({ item }: { item: ExperienceItem }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const Icon = item.icon;
 
@@ -416,8 +419,6 @@ export default function Experience() {
           <TimelineCard
             key={`${activeFilter}-${index}`}
             item={item}
-            index={index}
-            isLast={index === filteredData.length - 1}
           />
         ))}
       </div>

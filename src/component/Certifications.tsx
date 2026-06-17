@@ -8,9 +8,7 @@ import {
   Certificate,
   CaretLeft,
   CaretRight,
-  SealCheck,
   GraduationCap,
-  Trophy,
   Link,
 } from "@phosphor-icons/react";
 
@@ -81,10 +79,13 @@ export default function Certifications() {
 
   useEffect(() => {
     if (!emblaApi) return;
-    onSelect();
     setScrollSnaps(emblaApi.scrollSnapList());
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", onSelect);
+    return () => {
+      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onSelect);
+    };
   }, [emblaApi, onSelect]);
 
   return (

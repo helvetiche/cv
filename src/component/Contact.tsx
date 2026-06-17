@@ -52,7 +52,7 @@ export default function Contact() {
             className="text-white text-3xl md:text-4xl lg:text-5xl font-light tracking-tight mb-4 md:mb-6"
             style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
           >
-            Let's Connect
+            Let&apos;s Connect
           </h2>
           <p className="text-white/30 text-xs md:text-sm font-mono max-w-lg mx-auto leading-relaxed px-2">
             Interested in working together or have a question? Feel free to reach out through any of the channels below.

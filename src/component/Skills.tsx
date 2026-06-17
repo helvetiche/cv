@@ -5,15 +5,11 @@ import {
   PaintBrush,
   Database,
   Cloud,
-  DeviceMobile,
-  Brain,
   GitBranch,
   Terminal,
   Globe,
-  Cpu,
   Stack,
   Wrench,
-  HardDrives,
 } from "@phosphor-icons/react";
 import BorderGlow from "./BorderGlow";
 import GridBackground from "./GridBackground";
@@ -64,14 +60,6 @@ const skills: Skill[] = [
   { name: "Vite", icon: Wrench, category: "tools" },
 ];
 
-const skillCategories = [
-  { label: "All", value: "all" as const },
-  { label: "Frontend", value: "frontend" as const },
-  { label: "Backend", value: "backend" as const },
-  { label: "Cloud & DevOps", value: "cloud" as const },
-  { label: "Tools", value: "tools" as const },
-];
-
 export default function Skills() {
   return (
     <section className="relative w-full bg-[#000000] py-12 md:py-16 lg:py-24 overflow-hidden">
@@ -95,7 +83,7 @@ export default function Skills() {
 
         {/* Skills Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 md:gap-3 lg:gap-4">
-          {skills.map((skill, index) => {
+          {skills.map((skill) => {
             const Icon = skill.icon;
             return (
               <BorderGlow

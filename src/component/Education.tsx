@@ -100,9 +100,12 @@ export default function Education() {
 
   useEffect(() => {
     if (!emblaApi) return;
-    onScroll();
     emblaApi.on("select", onScroll);
     emblaApi.on("reInit", onScroll);
+    return () => {
+      emblaApi.off("select", onScroll);
+      emblaApi.off("reInit", onScroll);
+    };
   }, [emblaApi, onScroll]);
 
   const handleScrollbarClick = (e: React.MouseEvent<HTMLDivElement>) => {

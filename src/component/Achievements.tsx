@@ -93,14 +93,13 @@ const achievements = [
 export default function Achievements() {
   const [activeFilter, setActiveFilter] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "start", containScroll: "trimSnaps" });
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
-
   const filteredAchievements = activeFilter === 0
     ? achievements
     : activeFilter === 1
       ? achievements.filter((a) => a.category === "speaking")
       : achievements.filter((a) => a.category === "leadership" || a.category === "awards");
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
@@ -113,7 +112,6 @@ export default function Achievements() {
 
   useEffect(() => {
     if (!emblaApi) return;
-    setScrollSnaps(emblaApi.scrollSnapList());
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", onSelect);
     return () => {
@@ -121,6 +119,12 @@ export default function Achievements() {
       emblaApi.off("reInit", onSelect);
     };
   }, [emblaApi, onSelect]);
+
+  const handleFilterChange = useCallback((index: number) => {
+    setActiveFilter(index);
+    setSelectedIndex(0);
+    emblaApi?.scrollTo(0);
+  }, [emblaApi]);
 
   return (
     <section className="relative w-full bg-[#000000] py-12 md:py-16 lg:py-24 overflow-hidden">
@@ -145,7 +149,7 @@ export default function Achievements() {
             return (
               <button
                 key={pill.label}
-                onClick={() => setActiveFilter(index)}
+                onClick={() => handleFilterChange(index)}
                 className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-2 md:py-2.5 rounded-full border transition-all duration-300 whitespace-nowrap ${
                   isActive
                     ? "bg-white/10 border-white/30 text-white"
@@ -247,7 +251,7 @@ export default function Achievements() {
           </button>
 
           <div className="flex gap-1.5 md:gap-2">
-            {scrollSnaps.map((_, i) => (
+            {filteredAchievements.map((_, i) => (
               <button
                 key={i}
                 onClick={() => scrollTo(i)}

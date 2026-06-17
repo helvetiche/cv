@@ -66,7 +66,6 @@ const certifications: Certification[] = [
 export default function Certifications() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "start", containScroll: "trimSnaps" });
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
@@ -79,7 +78,6 @@ export default function Certifications() {
 
   useEffect(() => {
     if (!emblaApi) return;
-    setScrollSnaps(emblaApi.scrollSnapList());
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", onSelect);
     return () => {
@@ -190,7 +188,7 @@ export default function Certifications() {
             </button>
 
             <div className="flex gap-1.5 md:gap-2">
-              {scrollSnaps.map((_, i) => (
+              {certifications.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => scrollTo(i)}

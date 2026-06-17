@@ -159,7 +159,6 @@ const experienceData: ExperienceItem[] = [
 function ImageCarousel({ images }: { images: string[] }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
@@ -172,7 +171,6 @@ function ImageCarousel({ images }: { images: string[] }) {
 
   useEffect(() => {
     if (!emblaApi) return;
-    setScrollSnaps(emblaApi.scrollSnapList());
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", onSelect);
     return () => {
@@ -217,7 +215,7 @@ function ImageCarousel({ images }: { images: string[] }) {
           </button>
         </div>
         <div className="flex gap-1.5">
-          {scrollSnaps.map((_, i) => (
+          {images.map((_, i) => (
             <button
               key={i}
               onClick={() => scrollTo(i)}

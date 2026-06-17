@@ -70,8 +70,9 @@ export function useScrollMotionBlur<T extends HTMLElement = HTMLDivElement>() {
   useEffect(() => {
     svgRef.current = createMotionBlurSvg();
 
-    if (targetRef.current && svgRef.current) {
-      targetRef.current.style.filter = "url(#scroll-motion-blur)";
+    const target = targetRef.current;
+    if (target && svgRef.current) {
+      target.style.filter = "url(#scroll-motion-blur)";
     }
 
     /* ------------------------------------------
@@ -159,8 +160,8 @@ export function useScrollMotionBlur<T extends HTMLElement = HTMLDivElement>() {
         svgRef.current.element.remove();
         svgRef.current = null;
       }
-      if (targetRef.current) {
-        targetRef.current.style.filter = "";
+      if (target) {
+        target.style.filter = "";
       }
     };
   }, []);

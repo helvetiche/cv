@@ -4,8 +4,8 @@ import { useState, useCallback, useEffect } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import BorderGlow from "./BorderGlow";
 import GridBackground from "./GridBackground";
-import { getProjects, type Project } from "@/lib/projectsService";
-import { getTechIcon } from "@/lib/techIcons";
+import { getProjects, type Project } from "../lib/projectsService";
+import { getTechIcon } from "../lib/techIcons";
 import {
   CaretLeft,
   CaretRight,
@@ -132,9 +132,9 @@ function ProjectCard({ project }: { project: Project }) {
    ============================================ */
 function ProjectCardSkeleton() {
   return (
-    <div className="rounded-2xl border border-white/5 bg-[#0a0a0a] overflow-hidden">
-      <div className="w-full animate-pulse" style={{ paddingBottom: "56.25%", background: "rgba(255,255,255,0.03)" }} />
-      <div className="p-4 md:p-6 space-y-3">
+    <div className="rounded-2xl border border-white/5 bg-[#0a0a0a] overflow-hidden h-full flex flex-col">
+      <div className="w-full animate-pulse shrink-0" style={{ paddingBottom: "56.25%", background: "rgba(255,255,255,0.03)" }} />
+      <div className="p-4 md:p-6 space-y-3 flex-1 flex flex-col">
         <div className="h-5 bg-white/5 rounded w-2/3 animate-pulse" />
         <div className="h-3 bg-white/5 rounded w-full animate-pulse" />
         <div className="h-3 bg-white/5 rounded w-4/5 animate-pulse" />
@@ -155,14 +155,13 @@ export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "start" });
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "start" });
 
   // Fetch projects from Firestore
   useEffect(() => {
     async function fetchProjects() {
       try {
-        setLoading(true);
         const data = await getProjects();
         setProjects(data);
       } catch (err) {
@@ -173,7 +172,7 @@ export default function Projects() {
       }
     }
     fetchProjects();
-  });
+  }, []);
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
@@ -188,19 +187,23 @@ export default function Projects() {
     if (!emblaApi) return;
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", onSelect);
+    onSelect();
     return () => {
       emblaApi.off("select", onSelect);
       emblaApi.off("reInit", onSelect);
     };
   }, [emblaApi, onSelect]);
 
-  // Reset carousel position when data loads
+  // Re-initialize carousel when projects data changes
   useEffect(() => {
-    if (projects.length > 0) {
-      emblaApi?.scrollTo(0);
-      setSelectedIndex(0);
-    }
-  }, [projects, emblaApi]);
+    if (!emblaApi || loading) return;
+    emblaApi.reInit();
+    setSelectedIndex(0);
+  }, [projects, loading, emblaApi]);
+
+  const displayItems = loading
+    ? Array.from({ length: 4 }, (_, i) => ({ id: `skeleton-${i}` } as Project))
+    : projects;
 
   return (
     <section className="relative w-full bg-[#000000] py-12 md:py-16 lg:py-24 overflow-hidden min-h-screen">
@@ -216,7 +219,7 @@ export default function Projects() {
           Projects
         </h2>
 
-        {projects.length > 0 && (
+        {!loading && projects.length > 0 && (
           <p className="text-white/30 text-xs md:text-sm font-mono max-w-2xl mx-auto leading-relaxed px-2">
             A collection of {projects.length} projects spanning freelance work, academic endeavors, and personal explorations — each representing a unique challenge and learning experience.
           </p>
@@ -232,24 +235,24 @@ export default function Projects() {
         ) : (
           <>
             <div className="overflow-hidden" ref={emblaRef}>
-              <div className="flex gap-4 md:gap-6">
-                {loading
-                  ? Array.from({ length: 4 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="flex-[0_0_95%] sm:flex-[0_0_75%] md:flex-[0_0_48%] lg:flex-[0_0_38%] min-w-0"
-                      >
-                        <ProjectCardSkeleton />
-                      </div>
-                    ))
-                  : projects.map((project) => (
-                      <div
-                        key={project.id}
-                        className="flex-[0_0_95%] sm:flex-[0_0_75%] md:flex-[0_0_48%] lg:flex-[0_0_38%] min-w-0"
-                      >
-                        <ProjectCard project={project} />
-                      </div>
-                    ))}
+              <div className="flex gap-4 md:gap-6 items-stretch">
+                {displayItems.map((project) =>
+                  loading ? (
+                    <div
+                      key={project.id}
+                      className="flex-[0_0_95%] sm:flex-[0_0_75%] md:flex-[0_0_48%] lg:flex-[0_0_38%] min-w-0 flex flex-col"
+                    >
+                      <ProjectCardSkeleton />
+                    </div>
+                  ) : (
+                    <div
+                      key={project.id}
+                      className="flex-[0_0_95%] sm:flex-[0_0_75%] md:flex-[0_0_48%] lg:flex-[0_0_38%] min-w-0 flex flex-col"
+                    >
+                      <ProjectCard project={project} />
+                    </div>
+                  )
+                )}
               </div>
             </div>
 
@@ -264,7 +267,7 @@ export default function Projects() {
                 </button>
 
                 <div className="flex gap-1 md:gap-1.5 max-w-[120px] md:max-w-none overflow-hidden">
-                  {projects.map((_, i) => (
+                  {displayItems.map((_, i) => (
                     <button
                       key={i}
                       onClick={() => scrollTo(i)}

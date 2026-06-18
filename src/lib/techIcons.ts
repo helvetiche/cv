@@ -1,3 +1,4 @@
+import { type IconType } from "react-icons";
 import {
   SiNextdotjs,
   SiReact,
@@ -16,30 +17,25 @@ import {
   SiStripe,
   SiExpress,
   SiSupabase,
-  SiD3Dotjs,
-  SiChartdotjs,
   SiSocketdotio,
   SiRaspberrypi,
   SiExpo,
   SiVercel,
   SiGit,
   SiGithub,
-  SiGnubash,
-  SiNodemailer,
-  SiReact as SiReactNative,
-  SiApachekafka,
   SiInfluxdb,
+  SiD3,
+  SiChartdotjs,
+  SiGnubash,
 } from "react-icons/si";
-import { DiMysql, DiRedis, DiDatabase } from "react-icons/di";
-import { BiCodeAlt, BiChip, BiCloud, BiData, BiPalette, BiShield, BiWifi } from "react-icons/bi";
-import { type IconType } from "react-icons";
+import { BiCodeAlt, BiChip, BiShield, BiWifi } from "react-icons/bi";
 
 // Map technology names to React Icons
 const techIconMap: Record<string, IconType> = {
   // Frontend Frameworks
   "Next.js": SiNextdotjs,
   React: SiReact,
-  "React Native": SiReactNative,
+  "React Native": SiReact,
 
   // Backend
   "Node.js": SiNodedotjs,
@@ -73,7 +69,7 @@ const techIconMap: Record<string, IconType> = {
   OAuth: BiShield,
 
   // Visualization
-  "D3.js": SiD3Dotjs,
+  "D3.js": SiD3,
   "Chart.js": SiChartdotjs,
 
   // IoT & Hardware
@@ -86,7 +82,6 @@ const techIconMap: Record<string, IconType> = {
   Git: SiGit,
   GitHub: SiGithub,
   Cron: SiGnubash,
-  Nodemailer: SiNodemailer,
   "Excel JS": BiCodeAlt,
   Automation: BiChip,
 };

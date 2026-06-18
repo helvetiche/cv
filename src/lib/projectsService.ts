@@ -1,6 +1,3 @@
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
-import { db } from "./firebase";
-
 // Project type matching Firestore fields
 export interface Project {
   id: string;
@@ -14,14 +11,10 @@ export interface Project {
   updatedAt: string;
 }
 
-const COLLECTION_NAME = "projects";
-
-// Get all projects
+// Get all projects from API
 export async function getProjects(): Promise<Project[]> {
-  const q = query(collection(db, COLLECTION_NAME), orderBy("createdAt", "desc"));
-  const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  })) as Project[];
+  const res = await fetch("/api/projects");
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error);
+  return data.data;
 }

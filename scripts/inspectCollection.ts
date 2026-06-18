@@ -1,5 +1,13 @@
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../src/lib/firebase";
+/**
+ * Inspect Firestore collection using Admin SDK
+ * Run with: npx tsx scripts/inspectCollection.ts
+ */
+
+import { adminDb } from "../src/lib/firebase-admin";
+import * as dotenv from "dotenv";
+import * as path from "path";
+
+dotenv.config({ path: path.resolve(__dirname, "../.env.local") });
 
 const COLLECTION_NAME = "projects";
 
@@ -7,19 +15,21 @@ async function inspectCollection() {
   console.log(`\n📦 Inspecting collection: "${COLLECTION_NAME}"\n${"=".repeat(50)}`);
 
   try {
-    const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
+    const snapshot = await adminDb.collection(COLLECTION_NAME).get();
 
-    if (querySnapshot.empty) {
+    if (snapshot.empty) {
       console.log("⚠️  Collection is empty or does not exist.");
       return;
     }
 
-    console.log(`✅ Found ${querySnapshot.size} document(s)\n`);
+    console.log(`✅ Found ${snapshot.size} document(s)\n`);
 
-    querySnapshot.forEach((doc, index) => {
+    let idx = 0;
+    snapshot.forEach((doc) => {
+      idx++;
       const data = doc.data();
 
-      console.log(`\n📄 Document ${index + 1}`);
+      console.log(`\n📄 Document ${idx}`);
       console.log(`   ID: ${doc.id}`);
       console.log(`   Fields:`);
 
@@ -28,7 +38,7 @@ async function inspectCollection() {
         const preview =
           type === "array"
             ? `[${value.length} items] ${JSON.stringify(value).slice(0, 80)}...`
-            : type === "string" && value.length > 80
+            : type === "string" && typeof value === "string" && value.length > 80
               ? `"${value.slice(0, 80)}..."`
               : JSON.stringify(value);
 

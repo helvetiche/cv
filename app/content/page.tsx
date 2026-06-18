@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { getTechIcon } from "../../src/lib/techIcons";
 import type { Project } from "../../src/lib/projectsService";
 import {
@@ -14,12 +15,15 @@ import {
   Image,
   Tag,
   TextT,
-  Link,
   CheckCircle,
   Warning,
   FolderOpen,
   UploadSimple,
   Spinner,
+  Envelope,
+  SignOut,
+  User,
+  Lock,
 } from "@phosphor-icons/react";
 
 // Available tech tags for selection
@@ -51,7 +55,20 @@ const emptyForm: ProjectForm = {
   live: "",
 };
 
-export default function ContentDashboard() {
+// Auth state
+interface AuthUser {
+  uid: string;
+  email: string;
+}
+
+function ContentDashboardInner() {
+  const searchParams = useSearchParams();
+  const [authState, setAuthState] = useState<"loading" | "unauthenticated" | "authenticated">("loading");
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [email, setEmail] = useState("");
+  const [sendingLink, setSendingLink] = useState(false);
+  const [devLink, setDevLink] = useState<string | null>(null);
+
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<ProjectForm>(emptyForm);
@@ -60,6 +77,138 @@ export default function ContentDashboard() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  // Show notification
+  const showNotification = (type: "success" | "error", message: string) => {
+    setNotification({ type, message });
+    setTimeout(() => setNotification(null), 4000);
+  };
+
+  // Check session on mount
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  // Handle magic link code from URL
+  useEffect(() => {
+    const code = searchParams.get("code");
+    if (code) {
+      verifyCode(code);
+    }
+  }, [searchParams]);
+
+  const checkSession = async () => {
+    try {
+      const res = await fetch("/api/auth/session");
+      const data = await res.json();
+      if (data.success) {
+        setUser(data.user);
+        setAuthState("authenticated");
+      } else {
+        setAuthState("unauthenticated");
+      }
+    } catch {
+      setAuthState("unauthenticated");
+    }
+  };
+
+  const verifyCode = async (code: string) => {
+    try {
+      const res = await fetch("/api/auth/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setUser(data.user);
+        setAuthState("authenticated");
+        showNotification("success", "Signed in successfully!");
+        // Clean URL
+        window.history.replaceState({}, "", "/content");
+      } else {
+        showNotification("error", data.error || "Invalid code");
+      }
+    } catch {
+      showNotification("error", "Failed to verify code");
+    }
+  };
+
+  const handleSendLink = async () => {
+    if (!email.trim()) {
+      showNotification("error", "Please enter your email");
+      return;
+    }
+
+    setSendingLink(true);
+    setDevLink(null);
+
+    try {
+      const res = await fetch("/api/auth/send-link", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        showNotification("success", "Check your email for the sign-in link!");
+        if (data.magicLink) {
+          setDevLink(data.magicLink);
+        }
+      } else {
+        showNotification("error", data.error || "Failed to send link");
+      }
+    } catch {
+      showNotification("error", "Failed to send sign-in link");
+    } finally {
+      setSendingLink(false);
+    }
+  };
+
+  const handlePasswordLogin = async () => {
+    if (!email.trim() || !password) {
+      setLoginError("Email and password are required");
+      return;
+    }
+
+    setLoggingIn(true);
+    setLoginError(null);
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setUser(data.user);
+        setAuthState("authenticated");
+        showNotification("success", "Signed in successfully!");
+      } else {
+        setLoginError(data.error || "Invalid credentials");
+      }
+    } catch {
+      setLoginError("Failed to sign in");
+    } finally {
+      setLoggingIn(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      setUser(null);
+      setAuthState("unauthenticated");
+      setEmail("");
+      setPassword("");
+      setDevLink(null);
+    } catch {
+      showNotification("error", "Failed to sign out");
+    }
+  };
 
   // Fetch projects from API
   const fetchProjects = useCallback(async () => {
@@ -80,14 +229,10 @@ export default function ContentDashboard() {
   }, []);
 
   useEffect(() => {
-    fetchProjects();
-  }, [fetchProjects]);
-
-  // Show notification
-  const showNotification = (type: "success" | "error", message: string) => {
-    setNotification({ type, message });
-    setTimeout(() => setNotification(null), 3000);
-  };
+    if (authState === "authenticated") {
+      fetchProjects();
+    }
+  }, [authState, fetchProjects]);
 
   // Handle form input change
   const handleChange = (field: keyof ProjectForm, value: string | string[]) => {
@@ -114,7 +259,6 @@ export default function ContentDashboard() {
     setSaving(true);
     try {
       if (editingId) {
-        // Update existing project
         const res = await fetch(`/api/projects/${editingId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -124,7 +268,6 @@ export default function ContentDashboard() {
         if (!data.success) throw new Error(data.error);
         showNotification("success", "Project updated successfully");
       } else {
-        // Create new project
         const res = await fetch("/api/projects", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -147,7 +290,6 @@ export default function ContentDashboard() {
     }
   };
 
-  // Edit project
   const handleEdit = (project: Project) => {
     setForm({
       title: project.title,
@@ -161,7 +303,6 @@ export default function ContentDashboard() {
     setShowForm(true);
   };
 
-  // Delete project via API
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this project?")) return;
 
@@ -177,25 +318,21 @@ export default function ContentDashboard() {
     }
   };
 
-  // Cancel editing
   const handleCancel = () => {
     setForm(emptyForm);
     setEditingId(null);
     setShowForm(false);
   };
 
-  // Upload image to imgbb via server API
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith("image/")) {
       showNotification("error", "Please select an image file");
       return;
     }
 
-    // Validate file size (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
       showNotification("error", "Image size should be less than 10MB");
       return;
@@ -225,13 +362,206 @@ export default function ContentDashboard() {
       showNotification("error", "Failed to upload image. Please try again.");
     } finally {
       setUploading(false);
-      // Reset input so same file can be selected again
       e.target.value = "";
     }
   };
 
+  // ==================== LOGIN SCREEN ====================
+  if (authState === "loading") {
+    return (
+      <div className="min-h-screen bg-[#000000] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Spinner size={32} weight="bold" className="animate-spin text-white/50" />
+          <p className="text-white/30 font-mono text-sm">Checking session...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (authState === "unauthenticated") {
+    return (
+      <div className="min-h-screen bg-[#000000] flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          {/* Logo / Header */}
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.02]">
+              <Lock size={24} weight="duotone" className="text-white/50" />
+            </div>
+            <h1
+              className="text-2xl md:text-3xl font-light text-white mb-2"
+              style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
+            >
+              Content Dashboard
+            </h1>
+            <p className="text-white/40 text-sm font-mono">
+              Sign in to continue
+            </p>
+          </div>
+
+          {/* Login Card */}
+          <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 md:p-8">
+            {/* Tab Switcher */}
+            <div className="flex mb-6 bg-white/[0.03] rounded-lg p-1">
+              <button
+                onClick={() => { setLoginTab("passwordless"); setLoginError(null); }}
+                className={`flex-1 py-2 px-3 rounded-md text-xs font-mono uppercase tracking-wider transition-all ${
+                  loginTab === "passwordless"
+                    ? "bg-white/10 text-white"
+                    : "text-white/40 hover:text-white/60"
+                }`}
+              >
+                Magic Link
+              </button>
+              <button
+                onClick={() => { setLoginTab("password"); setLoginError(null); setDevLink(null); }}
+                className={`flex-1 py-2 px-3 rounded-md text-xs font-mono uppercase tracking-wider transition-all ${
+                  loginTab === "password"
+                    ? "bg-white/10 text-white"
+                    : "text-white/40 hover:text-white/60"
+                }`}
+              >
+                Password
+              </button>
+            </div>
+
+            {/* Email Field */}
+            <div className="mb-4">
+              <label className="flex items-center gap-2 text-white/40 text-xs font-mono uppercase tracking-widest mb-2">
+                <Envelope size={12} weight="bold" />
+                Email Address
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    if (loginTab === "passwordless") handleSendLink();
+                    else handlePasswordLogin();
+                  }
+                }}
+                placeholder="your@email.com"
+                className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-lg text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-colors font-mono text-sm"
+                autoFocus
+              />
+            </div>
+
+            {/* Password Field (only for password tab) */}
+            {loginTab === "password" && (
+              <div className="mb-4">
+                <label className="flex items-center gap-2 text-white/40 text-xs font-mono uppercase tracking-widest mb-2">
+                  <Lock size={12} weight="bold" />
+                  Password
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handlePasswordLogin()}
+                  placeholder="Enter your password"
+                  className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-lg text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-colors font-mono text-sm"
+                />
+              </div>
+            )}
+
+            {/* Error Message */}
+            {loginError && (
+              <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                <p className="text-red-400 text-xs font-mono">{loginError}</p>
+              </div>
+            )}
+
+            {/* Action Button */}
+            {loginTab === "passwordless" ? (
+              <>
+                <button
+                  onClick={handleSendLink}
+                  disabled={sendingLink}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/15 border border-white/20 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {sendingLink ? (
+                    <>
+                      <Spinner size={16} weight="bold" className="animate-spin" />
+                      <span className="text-sm font-mono">Sending...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Envelope size={16} weight="bold" />
+                      <span className="text-sm font-mono">Send Sign-In Link</span>
+                    </>
+                  )}
+                </button>
+                <p className="text-white/20 text-xs font-mono text-center mt-4">
+                  You&apos;ll receive a magic link to sign in instantly.
+                </p>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={handlePasswordLogin}
+                  disabled={loggingIn}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/15 border border-white/20 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loggingIn ? (
+                    <>
+                      <Spinner size={16} weight="bold" className="animate-spin" />
+                      <span className="text-sm font-mono">Signing in...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Lock size={16} weight="bold" />
+                      <span className="text-sm font-mono">Sign In</span>
+                    </>
+                  )}
+                </button>
+              </>
+            )}
+
+            {/* Dev Link */}
+            {devLink && loginTab === "passwordless" && (
+              <div className="mt-6 p-4 bg-green-500/5 border border-green-500/20 rounded-lg">
+                <p className="text-green-400/70 text-[10px] font-mono uppercase tracking-widest mb-2">
+                  Development Link
+                </p>
+                <a
+                  href={devLink}
+                  className="text-green-400 text-xs font-mono break-all hover:underline"
+                >
+                  {devLink}
+                </a>
+              </div>
+            )}
+          </div>
+
+          <p className="text-white/15 text-[10px] font-mono text-center mt-6">
+            Protected area. Unauthorized access prohibited.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // ==================== DASHBOARD ====================
   return (
     <div className="min-h-screen bg-[#000000] text-white">
+      {/* Notification */}
+      {notification && (
+        <div
+          className={`fixed top-4 right-4 z-[100] flex items-center gap-2 px-4 py-3 rounded-lg border ${
+            notification.type === "success"
+              ? "bg-green-500/10 border-green-500/30 text-green-400"
+              : "bg-red-500/10 border-red-500/30 text-red-400"
+          }`}
+        >
+          {notification.type === "success" ? (
+            <CheckCircle size={16} weight="fill" />
+          ) : (
+            <Warning size={16} weight="fill" />
+          )}
+          <span className="text-sm font-mono">{notification.message}</span>
+        </div>
+      )}
+
       {/* Header */}
       <header className="sticky top-0 z-50 bg-[#000000]/90 backdrop-blur-sm border-b border-white/5">
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
@@ -246,33 +576,34 @@ export default function ContentDashboard() {
               Manage your portfolio projects
             </p>
           </div>
-          <button
-            onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 border border-white/20 rounded-lg transition-all"
-          >
-            <Plus size={16} weight="bold" />
-            <span className="text-sm font-mono">New Project</span>
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowForm(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 border border-white/20 rounded-lg transition-all"
+            >
+              <Plus size={16} weight="bold" />
+              <span className="text-sm font-mono hidden sm:inline">New Project</span>
+            </button>
+
+            {/* User Menu */}
+            <div className="flex items-center gap-2 pl-3 border-l border-white/10">
+              <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.03]">
+                <User size={14} weight="fill" className="text-white/50" />
+              </div>
+              <span className="text-white/50 text-xs font-mono hidden md:inline max-w-[120px] truncate">
+                {user?.email}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 text-white/40 hover:text-red-400 hover:border-red-400/30 transition-all"
+                title="Sign out"
+              >
+                <SignOut size={14} weight="bold" />
+              </button>
+            </div>
+          </div>
         </div>
       </header>
-
-      {/* Notification */}
-      {notification && (
-        <div
-          className={`fixed top-20 right-4 z-50 flex items-center gap-2 px-4 py-3 rounded-lg border ${
-            notification.type === "success"
-              ? "bg-green-500/10 border-green-500/30 text-green-400"
-              : "bg-red-500/10 border-red-500/30 text-red-400"
-          }`}
-        >
-          {notification.type === "success" ? (
-            <CheckCircle size={16} weight="fill" />
-          ) : (
-            <Warning size={16} weight="fill" />
-          )}
-          <span className="text-sm font-mono">{notification.message}</span>
-        </div>
-      )}
 
       <main className="max-w-6xl mx-auto px-4 md:px-8 py-8">
         {/* Project Form Modal */}
@@ -334,7 +665,6 @@ export default function ContentDashboard() {
                     Project Image
                   </label>
 
-                  {/* Upload Button */}
                   <div className="flex gap-3 mb-3">
                     <label
                       className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-dashed rounded-lg cursor-pointer transition-all ${
@@ -375,14 +705,12 @@ export default function ContentDashboard() {
                     )}
                   </div>
 
-                  {/* OR divider */}
                   <div className="flex items-center gap-3 mb-3">
                     <div className="flex-1 h-px bg-white/10" />
                     <span className="text-white/20 text-[10px] font-mono uppercase tracking-widest">or paste URL</span>
                     <div className="flex-1 h-px bg-white/10" />
                   </div>
 
-                  {/* URL Input */}
                   <input
                     type="url"
                     value={form.imageUrl}
@@ -391,7 +719,6 @@ export default function ContentDashboard() {
                     className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-lg text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-colors font-mono text-sm"
                   />
 
-                  {/* Image Preview */}
                   {form.imageUrl && (
                     <div className="mt-3 relative w-full rounded-lg overflow-hidden border border-white/10">
                       <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
@@ -564,7 +891,6 @@ export default function ContentDashboard() {
                   key={project.id}
                   className="bg-[#0a0a0a] border border-white/10 rounded-xl p-4 md:p-6 flex flex-col md:flex-row gap-4 md:gap-6 group hover:border-white/20 transition-all"
                 >
-                  {/* Project Image */}
                   {project.imageUrl && (
                     <div className="w-full md:w-40 h-24 md:h-28 rounded-lg overflow-hidden shrink-0 bg-white/5">
                       <img
@@ -575,7 +901,6 @@ export default function ContentDashboard() {
                     </div>
                   )}
 
-                  {/* Project Info */}
                   <div className="flex-1 min-w-0">
                     <h3
                       className="text-white text-lg font-light mb-1 truncate"
@@ -607,7 +932,6 @@ export default function ContentDashboard() {
                     </div>
                   </div>
 
-                  {/* Actions */}
                   <div className="flex md:flex-col items-center gap-2 shrink-0">
                     <button
                       onClick={() => handleEdit(project)}
@@ -662,5 +986,24 @@ export default function ContentDashboard() {
         </div>
       </footer>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-[#000000] flex items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <Spinner size={32} weight="bold" className="animate-spin text-white/50" />
+        <p className="text-white/30 font-mono text-sm">Loading...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function ContentDashboard() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ContentDashboardInner />
+    </Suspense>
   );
 }

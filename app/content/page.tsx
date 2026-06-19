@@ -68,6 +68,7 @@ function ContentDashboardInner() {
   const [email, setEmail] = useState("");
   const [sendingLink, setSendingLink] = useState(false);
   const [devLink, setDevLink] = useState<string | null>(null);
+  const [pendingOobCode, setPendingOobCode] = useState<string | null>(null);
 
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -89,11 +90,30 @@ function ContentDashboardInner() {
     checkSession();
   }, []);
 
-  // Handle magic link code from URL
+  // Handle Firebase email sign-in link
   useEffect(() => {
-    const code = searchParams.get("code");
-    if (code) {
-      verifyCode(code);
+    const oobCode = searchParams.get("oobCode");
+    const mode = searchParams.get("mode");
+    const email = searchParams.get("email");
+    
+    if (oobCode && mode === "signIn") {
+      // If email is provided in URL (dev mode), use it
+      if (email) {
+        verifyCode(oobCode, email);
+      } else {
+        // In production, Firebase doesn't pass email in URL for security
+        // Check if we have a stored email from when the link was requested
+        const storedEmail = localStorage.getItem("emailForSignIn");
+        if (storedEmail) {
+          verifyCode(oobCode, storedEmail);
+          localStorage.removeItem("emailForSignIn");
+        } else {
+          // No stored email - user needs to enter it
+          // Store the oobCode and show email input
+          setPendingOobCode(oobCode);
+          setAuthState("unauthenticated");
+        }
+      }
     }
   }, [searchParams]);
 
@@ -104,6 +124,8 @@ function ContentDashboardInner() {
       if (data.success) {
         setUser(data.user);
         setAuthState("authenticated");
+        setPendingOobCode(null);
+        localStorage.removeItem("emailForSignIn");
       } else {
         setAuthState("unauthenticated");
       }
@@ -112,31 +134,47 @@ function ContentDashboardInner() {
     }
   };
 
-  const verifyCode = async (code: string) => {
+  const verifyCode = async (oobCode: string, email: string) => {
     try {
       const res = await fetch("/api/auth/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
+        body: JSON.stringify({ oobCode, email: decodeURIComponent(email) }),
       });
       const data = await res.json();
       if (data.success) {
         setUser(data.user);
         setAuthState("authenticated");
+        setPendingOobCode(null);
         showNotification("success", "Signed in successfully!");
         // Clean URL
         window.history.replaceState({}, "", "/content");
       } else {
         showNotification("error", data.error || "Invalid code");
+        // If verification fails, clear the pending code
+        setPendingOobCode(null);
       }
     } catch {
       showNotification("error", "Failed to verify code");
+      setPendingOobCode(null);
     }
   };
 
   const handleSendLink = async () => {
     if (!email.trim()) {
       showNotification("error", "Please enter your email");
+      return;
+    }
+
+    // If we have a pending oobCode (user clicked link but email wasn't stored),
+    // verify directly instead of sending a new link
+    if (pendingOobCode) {
+      setSendingLink(true);
+      try {
+        await verifyCode(pendingOobCode, email.trim());
+      } finally {
+        setSendingLink(false);
+      }
       return;
     }
 
@@ -152,6 +190,8 @@ function ContentDashboardInner() {
       const data = await res.json();
 
       if (data.success) {
+        // Store email in localStorage so we can retrieve it when user clicks the link
+        localStorage.setItem("emailForSignIn", email.trim());
         showNotification("success", "Check your email for the sign-in link!");
         if (data.magicLink) {
           setDevLink(data.magicLink);
@@ -173,6 +213,8 @@ function ContentDashboardInner() {
       setAuthState("unauthenticated");
       setEmail("");
       setDevLink(null);
+      setPendingOobCode(null);
+      localStorage.removeItem("emailForSignIn");
     } catch {
       showNotification("error", "Failed to sign out");
     }
@@ -368,6 +410,16 @@ function ContentDashboardInner() {
 
           {/* Login Card */}
           <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 md:p-8">
+            
+            {/* Pending Sign-In Notice */}
+            {pendingOobCode && (
+              <div className="mb-6 p-4 bg-blue-500/5 border border-blue-500/20 rounded-lg">
+                <p className="text-blue-400/70 text-xs font-mono">
+                  ✓ Sign-in link detected! Enter your email to complete sign-in.
+                </p>
+              </div>
+            )}
+            
             {/* Email Field */}
             <div className="mb-6">
               <label className="flex items-center gap-2 text-white/40 text-xs font-mono uppercase tracking-widest mb-2">
@@ -394,18 +446,25 @@ function ContentDashboardInner() {
               {sendingLink ? (
                 <>
                   <Spinner size={16} weight="bold" className="animate-spin" />
-                  <span className="text-sm font-mono">Sending...</span>
+                  <span className="text-sm font-mono">
+                    {pendingOobCode ? "Verifying..." : "Sending..."}
+                  </span>
                 </>
               ) : (
                 <>
                   <Envelope size={16} weight="bold" />
-                  <span className="text-sm font-mono">Send Sign-In Link</span>
+                  <span className="text-sm font-mono">
+                    {pendingOobCode ? "Complete Sign-In" : "Send Sign-In Link"}
+                  </span>
                 </>
               )}
             </button>
 
             <p className="text-white/20 text-xs font-mono text-center mt-4">
-              You&apos;ll receive a magic link to sign in instantly. No password needed.
+              {pendingOobCode 
+                ? "Enter the email address you used to request the sign-in link."
+                : "You'll receive a magic link to sign in instantly. No password needed."
+              }
             </p>
 
             {/* Dev Link */}

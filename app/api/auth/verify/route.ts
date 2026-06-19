@@ -1,64 +1,73 @@
 import { NextRequest, NextResponse } from "next/server";
-import { adminAuth, adminDb } from "../../../../src/lib/firebase-admin";
+import { adminAuth } from "../../../../src/lib/firebase-admin";
 
 export async function POST(request: NextRequest) {
   try {
-    const { code } = await request.json();
+    const { oobCode, email } = await request.json();
 
-    if (!code || typeof code !== "string") {
+    if (!oobCode || typeof oobCode !== "string") {
       return NextResponse.json(
         { success: false, error: "Code is required" },
         { status: 400 }
       );
     }
 
-    // Look up the code in Firestore
-    const codeDoc = await adminDb.collection("auth_codes").doc(code).get();
-
-    if (!codeDoc.exists) {
+    if (!email || typeof email !== "string") {
       return NextResponse.json(
-        { success: false, error: "Invalid or expired code" },
+        { success: false, error: "Email is required" },
+        { status: 400 }
+      );
+    }
+
+    const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { success: false, error: "Firebase API key not configured" },
+        { status: 500 }
+      );
+    }
+
+    // Complete the email sign-in using Firebase's signInWithEmailLink REST API
+    // This requires BOTH the oobCode and the email
+    const signInRes = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithEmailLink?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          oobCode,
+          email,
+        }),
+      }
+    );
+
+    const signInData = await signInRes.json();
+
+    if (signInData.error || !signInData.idToken) {
+      console.error("signInWithEmailLink error:", signInData.error);
+      return NextResponse.json(
+        { success: false, error: "Invalid or expired sign-in link. Please request a new one." },
         { status: 401 }
       );
     }
 
-    const codeData = codeDoc.data()!;
+    const idToken = signInData.idToken;
 
-    // Check if already used
-    if (codeData.used) {
-      return NextResponse.json(
-        { success: false, error: "Code already used" },
-        { status: 401 }
-      );
-    }
+    // Verify the ID token with Admin SDK
+    const decodedToken = await adminAuth.verifyIdToken(idToken);
+    const userRecord = await adminAuth.getUser(decodedToken.uid);
 
-    // Check expiration
-    if (codeData.expiresAt < Date.now()) {
-      return NextResponse.json(
-        { success: false, error: "Code expired" },
-        { status: 401 }
-      );
-    }
-
-    // Mark code as used
-    await codeDoc.ref.update({ used: true });
-
-    // Get the user by email to create a session
-    const userRecord = await adminAuth.getUserByEmail(codeData.email);
-
-    // Create a custom token, then exchange for session cookie
-    const customToken = await adminAuth.createCustomToken(userRecord.uid);
-    const sessionCookie = await adminAuth.createSessionCookie(customToken, {
+    // Create a session cookie from the ID token
+    const sessionCookie = await adminAuth.createSessionCookie(idToken, {
       expiresIn: 60 * 60 * 24 * 5 * 1000, // 5 days
     });
 
-    // Set the session cookie
     const response = NextResponse.json({
       success: true,
       message: "Signed in successfully",
       user: {
         uid: userRecord.uid,
-        email: codeData.email,
+        email,
       },
     });
 
@@ -66,7 +75,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 5, // 5 days
+      maxAge: 60 * 60 * 24 * 5,
       path: "/",
     });
 
@@ -74,7 +83,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Verify error:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to verify code" },
+      { success: false, error: "Failed to verify sign-in link" },
       { status: 500 }
     );
   }

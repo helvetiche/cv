@@ -166,44 +166,12 @@ function ContentDashboardInner() {
     }
   };
 
-  const handlePasswordLogin = async () => {
-    if (!email.trim() || !password) {
-      setLoginError("Email and password are required");
-      return;
-    }
-
-    setLoggingIn(true);
-    setLoginError(null);
-
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), password }),
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        setUser(data.user);
-        setAuthState("authenticated");
-        showNotification("success", "Signed in successfully!");
-      } else {
-        setLoginError(data.error || "Invalid credentials");
-      }
-    } catch {
-      setLoginError("Failed to sign in");
-    } finally {
-      setLoggingIn(false);
-    }
-  };
-
   const handleLogout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
       setUser(null);
       setAuthState("unauthenticated");
       setEmail("");
-      setPassword("");
       setDevLink(null);
     } catch {
       showNotification("error", "Failed to sign out");
@@ -400,32 +368,8 @@ function ContentDashboardInner() {
 
           {/* Login Card */}
           <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 md:p-8">
-            {/* Tab Switcher */}
-            <div className="flex mb-6 bg-white/[0.03] rounded-lg p-1">
-              <button
-                onClick={() => { setLoginTab("passwordless"); setLoginError(null); }}
-                className={`flex-1 py-2 px-3 rounded-md text-xs font-mono uppercase tracking-wider transition-all ${
-                  loginTab === "passwordless"
-                    ? "bg-white/10 text-white"
-                    : "text-white/40 hover:text-white/60"
-                }`}
-              >
-                Magic Link
-              </button>
-              <button
-                onClick={() => { setLoginTab("password"); setLoginError(null); setDevLink(null); }}
-                className={`flex-1 py-2 px-3 rounded-md text-xs font-mono uppercase tracking-wider transition-all ${
-                  loginTab === "password"
-                    ? "bg-white/10 text-white"
-                    : "text-white/40 hover:text-white/60"
-                }`}
-              >
-                Password
-              </button>
-            </div>
-
             {/* Email Field */}
-            <div className="mb-4">
+            <div className="mb-6">
               <label className="flex items-center gap-2 text-white/40 text-xs font-mono uppercase tracking-widest mb-2">
                 <Envelope size={12} weight="bold" />
                 Email Address
@@ -434,91 +378,38 @@ function ContentDashboardInner() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    if (loginTab === "passwordless") handleSendLink();
-                    else handlePasswordLogin();
-                  }
-                }}
+                onKeyDown={(e) => e.key === "Enter" && handleSendLink()}
                 placeholder="your@email.com"
                 className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-lg text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-colors font-mono text-sm"
                 autoFocus
               />
             </div>
 
-            {/* Password Field (only for password tab) */}
-            {loginTab === "password" && (
-              <div className="mb-4">
-                <label className="flex items-center gap-2 text-white/40 text-xs font-mono uppercase tracking-widest mb-2">
-                  <Lock size={12} weight="bold" />
-                  Password
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handlePasswordLogin()}
-                  placeholder="Enter your password"
-                  className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-lg text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-colors font-mono text-sm"
-                />
-              </div>
-            )}
+            {/* Send Link Button */}
+            <button
+              onClick={handleSendLink}
+              disabled={sendingLink}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/15 border border-white/20 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {sendingLink ? (
+                <>
+                  <Spinner size={16} weight="bold" className="animate-spin" />
+                  <span className="text-sm font-mono">Sending...</span>
+                </>
+              ) : (
+                <>
+                  <Envelope size={16} weight="bold" />
+                  <span className="text-sm font-mono">Send Sign-In Link</span>
+                </>
+              )}
+            </button>
 
-            {/* Error Message */}
-            {loginError && (
-              <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                <p className="text-red-400 text-xs font-mono">{loginError}</p>
-              </div>
-            )}
-
-            {/* Action Button */}
-            {loginTab === "passwordless" ? (
-              <>
-                <button
-                  onClick={handleSendLink}
-                  disabled={sendingLink}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/15 border border-white/20 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {sendingLink ? (
-                    <>
-                      <Spinner size={16} weight="bold" className="animate-spin" />
-                      <span className="text-sm font-mono">Sending...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Envelope size={16} weight="bold" />
-                      <span className="text-sm font-mono">Send Sign-In Link</span>
-                    </>
-                  )}
-                </button>
-                <p className="text-white/20 text-xs font-mono text-center mt-4">
-                  You&apos;ll receive a magic link to sign in instantly.
-                </p>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={handlePasswordLogin}
-                  disabled={loggingIn}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/15 border border-white/20 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loggingIn ? (
-                    <>
-                      <Spinner size={16} weight="bold" className="animate-spin" />
-                      <span className="text-sm font-mono">Signing in...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Lock size={16} weight="bold" />
-                      <span className="text-sm font-mono">Sign In</span>
-                    </>
-                  )}
-                </button>
-              </>
-            )}
+            <p className="text-white/20 text-xs font-mono text-center mt-4">
+              You&apos;ll receive a magic link to sign in instantly. No password needed.
+            </p>
 
             {/* Dev Link */}
-            {devLink && loginTab === "passwordless" && (
+            {devLink && (
               <div className="mt-6 p-4 bg-green-500/5 border border-green-500/20 rounded-lg">
                 <p className="text-green-400/70 text-[10px] font-mono uppercase tracking-widest mb-2">
                   Development Link

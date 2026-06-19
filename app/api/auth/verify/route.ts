@@ -43,18 +43,21 @@ export async function POST(request: NextRequest) {
     // Mark code as used
     await codeDoc.ref.update({ used: true });
 
-    // Create a session cookie using the UID
-    const sessionCookie = await adminAuth.createSessionCookie(
-      await adminAuth.createCustomToken(codeData.uid),
-      { expiresIn: 60 * 60 * 24 * 5 * 1000 } // 5 days
-    );
+    // Get the user by email to create a session
+    const userRecord = await adminAuth.getUserByEmail(codeData.email);
+
+    // Create a custom token, then exchange for session cookie
+    const customToken = await adminAuth.createCustomToken(userRecord.uid);
+    const sessionCookie = await adminAuth.createSessionCookie(customToken, {
+      expiresIn: 60 * 60 * 24 * 5 * 1000, // 5 days
+    });
 
     // Set the session cookie
     const response = NextResponse.json({
       success: true,
       message: "Signed in successfully",
       user: {
-        uid: codeData.uid,
+        uid: userRecord.uid,
         email: codeData.email,
       },
     });

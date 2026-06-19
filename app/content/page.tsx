@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { getTechIcon } from "../../src/lib/techIcons";
 import type { Project } from "../../src/lib/projectsService";
+import { getFirebaseAuth } from "../../src/lib/firebase-client";
 import {
   Plus,
   Trash,
@@ -85,52 +86,104 @@ function ContentDashboardInner() {
     setTimeout(() => setNotification(null), 4000);
   };
 
-  // Check session on mount
+  // Check session on mount, then handle email sign-in link if present
   useEffect(() => {
-    checkSession();
-  }, []);
+    const initAuth = async () => {
+      // First check if user already has a valid session
+      try {
+        const res = await fetch("/api/auth/session");
+        const data = await res.json();
+        if (data.success) {
+          // User is already signed in - show dashboard, ignore any oobCode
+          setUser(data.user);
+          setAuthState("authenticated");
+          setPendingOobCode(null);
+          localStorage.removeItem("emailForSignIn");
+          return;
+        }
+      } catch {
+        // Session check failed, continue to handle oobCode
+      }
 
-  // Handle Firebase email sign-in link
-  useEffect(() => {
-    const oobCode = searchParams.get("oobCode");
-    const mode = searchParams.get("mode");
-    const email = searchParams.get("email");
-    
-    if (oobCode && mode === "signIn") {
-      // If email is provided in URL (dev mode), use it
-      if (email) {
-        verifyCode(oobCode, email);
-      } else {
-        // In production, Firebase doesn't pass email in URL for security
+      // No valid session - check for email sign-in link
+      const oobCode = searchParams.get("oobCode");
+      const mode = searchParams.get("mode");
+      const email = searchParams.get("email");
+
+      if (oobCode && mode === "signIn") {
+        // If email is provided in URL (dev mode), verify immediately
+        if (email) {
+          verifyCode(oobCode, email);
+          return;
+        }
+
         // Check if we have a stored email from when the link was requested
         const storedEmail = localStorage.getItem("emailForSignIn");
         if (storedEmail) {
-          verifyCode(oobCode, storedEmail);
-          localStorage.removeItem("emailForSignIn");
-        } else {
-          // No stored email - user needs to enter it
-          // Store the oobCode and show email input
-          setPendingOobCode(oobCode);
-          setAuthState("unauthenticated");
+          // Use Firebase client SDK to properly handle email sign-in
+          await verifyWithFirebase(oobCode, storedEmail);
+          return;
         }
+
+        // No stored email - user needs to enter it manually
+        setPendingOobCode(oobCode);
+        setAuthState("unauthenticated");
+      } else {
+        // No oobCode, just show login
+        setAuthState("unauthenticated");
       }
-    }
+    };
+
+    initAuth();
   }, [searchParams]);
 
-  const checkSession = async () => {
+  // Verify email sign-in using Firebase client SDK
+  const verifyWithFirebase = async (oobCode: string, email: string) => {
     try {
-      const res = await fetch("/api/auth/session");
+      const auth = getFirebaseAuth();
+      if (!auth) {
+        throw new Error("Firebase auth not initialized");
+      }
+
+      // Dynamic import to avoid SSR issues
+      const { signInWithEmailLink } = await import("firebase/auth");
+      
+      // This properly handles the email sign-in with Firebase
+      const result = await signInWithEmailLink(auth, email, oobCode);
+      
+      // Get the ID token from the result
+      const idToken = await result.user.getIdToken();
+      
+      // Create session on server
+      const res = await fetch("/api/auth/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken }),
+      });
       const data = await res.json();
+      
       if (data.success) {
         setUser(data.user);
         setAuthState("authenticated");
         setPendingOobCode(null);
         localStorage.removeItem("emailForSignIn");
+        showNotification("success", "Signed in successfully!");
+        window.history.replaceState({}, "", "/content");
       } else {
-        setAuthState("unauthenticated");
+        throw new Error(data.error || "Failed to create session");
       }
-    } catch {
-      setAuthState("unauthenticated");
+    } catch (error: unknown) {
+      console.error("Firebase sign-in error:", error);
+      const errorMessage = error instanceof Error ? error.message : "Failed to sign in";
+      
+      // If oobCode is invalid, clear it and show error
+      if (errorMessage.includes("invalid") || errorMessage.includes("expired")) {
+        setPendingOobCode(null);
+        localStorage.removeItem("emailForSignIn");
+        showNotification("error", "Sign-in link expired. Please request a new one.");
+      } else {
+        showNotification("error", errorMessage);
+      }
     }
   };
 
@@ -167,11 +220,11 @@ function ContentDashboardInner() {
     }
 
     // If we have a pending oobCode (user clicked link but email wasn't stored),
-    // verify directly instead of sending a new link
+    // verify directly using Firebase SDK instead of sending a new link
     if (pendingOobCode) {
       setSendingLink(true);
       try {
-        await verifyCode(pendingOobCode, email.trim());
+        await verifyWithFirebase(pendingOobCode, email.trim());
       } finally {
         setSendingLink(false);
       }

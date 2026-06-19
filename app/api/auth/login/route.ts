@@ -3,18 +3,18 @@ import { adminAuth } from "../../../../src/lib/firebase-admin";
 
 export async function POST(request: NextRequest) {
   try {
-    const { oobCode, email } = await request.json();
-
-    if (!oobCode || typeof oobCode !== "string") {
-      return NextResponse.json(
-        { success: false, error: "Code is required" },
-        { status: 400 }
-      );
-    }
+    const { email, password } = await request.json();
 
     if (!email || typeof email !== "string") {
       return NextResponse.json(
         { success: false, error: "Email is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!password || typeof password !== "string") {
+      return NextResponse.json(
+        { success: false, error: "Password is required" },
         { status: 400 }
       );
     }
@@ -27,16 +27,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Complete the email sign-in using Firebase's signInWithEmailLink REST API
-    // This requires BOTH the oobCode and the email
+    // Sign in with email/password using Firebase REST API
     const signInRes = await fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithEmailLink?key=${apiKey}`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          oobCode,
-          email,
+          email: email.trim().toLowerCase(),
+          password,
+          returnSecureToken: true,
         }),
       }
     );
@@ -44,9 +44,14 @@ export async function POST(request: NextRequest) {
     const signInData = await signInRes.json();
 
     if (signInData.error || !signInData.idToken) {
-      console.error("signInWithEmailLink error:", signInData.error);
+      console.error("signInWithPassword error:", signInData.error);
+      const errorMessage = signInData.error?.message === "INVALID_PASSWORD" 
+        ? "Invalid password" 
+        : signInData.error?.message === "EMAIL_NOT_FOUND"
+        ? "No account found with this email"
+        : "Invalid email or password";
       return NextResponse.json(
-        { success: false, error: "Invalid or expired sign-in link. Please request a new one." },
+        { success: false, error: errorMessage },
         { status: 401 }
       );
     }
@@ -57,7 +62,7 @@ export async function POST(request: NextRequest) {
     const decodedToken = await adminAuth.verifyIdToken(idToken);
     const userRecord = await adminAuth.getUser(decodedToken.uid);
 
-    // Create a session cookie from the ID token
+    // Create a session cookie
     const sessionCookie = await adminAuth.createSessionCookie(idToken, {
       expiresIn: 60 * 60 * 24 * 5 * 1000, // 5 days
     });
@@ -67,7 +72,7 @@ export async function POST(request: NextRequest) {
       message: "Signed in successfully",
       user: {
         uid: userRecord.uid,
-        email,
+        email: userRecord.email,
       },
     });
 
@@ -81,9 +86,9 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error("Verify error:", error);
+    console.error("Login error:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to verify sign-in link" },
+      { success: false, error: "Failed to sign in" },
       { status: 500 }
     );
   }

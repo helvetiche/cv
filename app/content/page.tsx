@@ -1,10 +1,10 @@
 "use client";
 
+/* eslint-disable react-hooks/set-state-in-effect */
+
 import { useState, useEffect, useCallback, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
 import { getTechIcon } from "../../src/lib/techIcons";
 import type { Project } from "../../src/lib/projectsService";
-import { getFirebaseAuth } from "../../src/lib/firebase-client";
 import {
   Plus,
   Trash,
@@ -63,16 +63,13 @@ interface AuthUser {
 }
 
 function ContentDashboardInner() {
-  const searchParams = useSearchParams();
   const [authState, setAuthState] = useState<"loading" | "unauthenticated" | "authenticated">("loading");
   const [user, setUser] = useState<AuthUser | null>(null);
   const [email, setEmail] = useState("");
-  const [sendingLink, setSendingLink] = useState(false);
-  const [devLink, setDevLink] = useState<string | null>(null);
-  const [pendingOobCode, setPendingOobCode] = useState<string | null>(null);
-
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [projectsLoading, setProjectsLoading] = useState(true);
   const [form, setForm] = useState<ProjectForm>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -86,188 +83,64 @@ function ContentDashboardInner() {
     setTimeout(() => setNotification(null), 4000);
   };
 
-  // Check session on mount, then handle email sign-in link if present
+  // Check session on mount
   useEffect(() => {
-    const initAuth = async () => {
-      // First check if user already has a valid session
+    const checkSession = async () => {
       try {
         const res = await fetch("/api/auth/session");
         const data = await res.json();
         if (data.success) {
-          // User is already signed in - show dashboard, ignore any oobCode
           setUser(data.user);
           setAuthState("authenticated");
-          setPendingOobCode(null);
-          localStorage.removeItem("emailForSignIn");
-          return;
+        } else {
+          setAuthState("unauthenticated");
         }
       } catch {
-        // Session check failed, continue to handle oobCode
-      }
-
-      // No valid session - check for email sign-in link
-      const oobCode = searchParams.get("oobCode");
-      const mode = searchParams.get("mode");
-      const email = searchParams.get("email");
-
-      if (oobCode && mode === "signIn") {
-        // If email is provided in URL (dev mode), verify immediately
-        if (email) {
-          verifyCode(oobCode, email);
-          return;
-        }
-
-        // Check if we have a stored email from when the link was requested
-        const storedEmail = localStorage.getItem("emailForSignIn");
-        if (storedEmail) {
-          // Use Firebase client SDK to properly handle email sign-in
-          await verifyWithFirebase(oobCode, storedEmail);
-          return;
-        }
-
-        // No stored email - user needs to enter it manually
-        setPendingOobCode(oobCode);
-        setAuthState("unauthenticated");
-      } else {
-        // No oobCode, just show login
         setAuthState("unauthenticated");
       }
     };
+    checkSession();
+  }, []);
 
-    initAuth();
-  }, [searchParams]);
-
-  // Verify email sign-in using Firebase client SDK
-  const verifyWithFirebase = async (oobCode: string, email: string) => {
-    try {
-      const auth = getFirebaseAuth();
-      if (!auth) {
-        throw new Error("Firebase auth not initialized");
-      }
-
-      // Dynamic import to avoid SSR issues
-      const { signInWithEmailLink } = await import("firebase/auth");
-      
-      // This properly handles the email sign-in with Firebase
-      const result = await signInWithEmailLink(auth, email, oobCode);
-      
-      // Get the ID token from the result
-      const idToken = await result.user.getIdToken();
-      
-      // Create session on server
-      const res = await fetch("/api/auth/session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idToken }),
-      });
-      const data = await res.json();
-      
-      if (data.success) {
-        setUser(data.user);
-        setAuthState("authenticated");
-        setPendingOobCode(null);
-        localStorage.removeItem("emailForSignIn");
-        showNotification("success", "Signed in successfully!");
-        window.history.replaceState({}, "", "/content");
-      } else {
-        throw new Error(data.error || "Failed to create session");
-      }
-    } catch (error: unknown) {
-      console.error("Firebase sign-in error:", error);
-      const errorMessage = error instanceof Error ? error.message : "Failed to sign in";
-      
-      // If oobCode is invalid, clear it and show error
-      if (errorMessage.includes("invalid") || errorMessage.includes("expired")) {
-        setPendingOobCode(null);
-        localStorage.removeItem("emailForSignIn");
-        showNotification("error", "Sign-in link expired. Please request a new one.");
-      } else {
-        showNotification("error", errorMessage);
-      }
-    }
-  };
-
-  const verifyCode = async (oobCode: string, email: string) => {
-    try {
-      const res = await fetch("/api/auth/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ oobCode, email: decodeURIComponent(email) }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setUser(data.user);
-        setAuthState("authenticated");
-        setPendingOobCode(null);
-        showNotification("success", "Signed in successfully!");
-        // Clean URL
-        window.history.replaceState({}, "", "/content");
-      } else {
-        showNotification("error", data.error || "Invalid code");
-        // If verification fails, clear the pending code
-        setPendingOobCode(null);
-      }
-    } catch {
-      showNotification("error", "Failed to verify code");
-      setPendingOobCode(null);
-    }
-  };
-
-  const handleSendLink = async () => {
-    if (!email.trim()) {
-      showNotification("error", "Please enter your email");
+  // Handle login
+  const handleLogin = async () => {
+    if (!email.trim() || !password.trim()) {
+      showNotification("error", "Please enter email and password");
       return;
     }
 
-    // If we have a pending oobCode (user clicked link but email wasn't stored),
-    // verify directly using Firebase SDK instead of sending a new link
-    if (pendingOobCode) {
-      setSendingLink(true);
-      try {
-        await verifyWithFirebase(pendingOobCode, email.trim());
-      } finally {
-        setSendingLink(false);
-      }
-      return;
-    }
-
-    setSendingLink(true);
-    setDevLink(null);
-
+    setLoading(true);
     try {
-      const res = await fetch("/api/auth/send-link", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim() }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
       const data = await res.json();
 
       if (data.success) {
-        // Store email in localStorage so we can retrieve it when user clicks the link
-        localStorage.setItem("emailForSignIn", email.trim());
-        showNotification("success", "Check your email for the sign-in link!");
-        if (data.magicLink) {
-          setDevLink(data.magicLink);
-        }
+        setUser(data.user);
+        setAuthState("authenticated");
+        setPassword("");
+        showNotification("success", "Signed in successfully!");
       } else {
-        showNotification("error", data.error || "Failed to send link");
+        showNotification("error", data.error || "Failed to sign in");
       }
     } catch {
-      showNotification("error", "Failed to send sign-in link");
+      showNotification("error", "Failed to sign in");
     } finally {
-      setSendingLink(false);
+      setLoading(false);
     }
   };
 
+  // Handle logout
   const handleLogout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
       setUser(null);
       setAuthState("unauthenticated");
       setEmail("");
-      setDevLink(null);
-      setPendingOobCode(null);
-      localStorage.removeItem("emailForSignIn");
+      setPassword("");
     } catch {
       showNotification("error", "Failed to sign out");
     }
@@ -287,7 +160,7 @@ function ContentDashboardInner() {
       console.error("Failed to fetch projects:", err);
       showNotification("error", "Failed to load projects");
     } finally {
-      setLoading(false);
+      setProjectsLoading(false);
     }
   }, []);
 
@@ -463,18 +336,8 @@ function ContentDashboardInner() {
 
           {/* Login Card */}
           <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 md:p-8">
-            
-            {/* Pending Sign-In Notice */}
-            {pendingOobCode && (
-              <div className="mb-6 p-4 bg-blue-500/5 border border-blue-500/20 rounded-lg">
-                <p className="text-blue-400/70 text-xs font-mono">
-                  ✓ Sign-in link detected! Enter your email to complete sign-in.
-                </p>
-              </div>
-            )}
-            
             {/* Email Field */}
-            <div className="mb-6">
+            <div className="mb-4">
               <label className="flex items-center gap-2 text-white/40 text-xs font-mono uppercase tracking-widest mb-2">
                 <Envelope size={12} weight="bold" />
                 Email Address
@@ -483,57 +346,47 @@ function ContentDashboardInner() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSendLink()}
+                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
                 placeholder="your@email.com"
                 className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-lg text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-colors font-mono text-sm"
                 autoFocus
               />
             </div>
 
-            {/* Send Link Button */}
+            {/* Password Field */}
+            <div className="mb-6">
+              <label className="flex items-center gap-2 text-white/40 text-xs font-mono uppercase tracking-widest mb-2">
+                <Lock size={12} weight="bold" />
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+                placeholder="••••••••"
+                className="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-lg text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-colors font-mono text-sm"
+              />
+            </div>
+
+            {/* Login Button */}
             <button
-              onClick={handleSendLink}
-              disabled={sendingLink}
+              onClick={handleLogin}
+              disabled={loading}
               className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/15 border border-white/20 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {sendingLink ? (
+              {loading ? (
                 <>
                   <Spinner size={16} weight="bold" className="animate-spin" />
-                  <span className="text-sm font-mono">
-                    {pendingOobCode ? "Verifying..." : "Sending..."}
-                  </span>
+                  <span className="text-sm font-mono">Signing in...</span>
                 </>
               ) : (
                 <>
-                  <Envelope size={16} weight="bold" />
-                  <span className="text-sm font-mono">
-                    {pendingOobCode ? "Complete Sign-In" : "Send Sign-In Link"}
-                  </span>
+                  <Lock size={16} weight="bold" />
+                  <span className="text-sm font-mono">Sign In</span>
                 </>
               )}
             </button>
-
-            <p className="text-white/20 text-xs font-mono text-center mt-4">
-              {pendingOobCode 
-                ? "Enter the email address you used to request the sign-in link."
-                : "You'll receive a magic link to sign in instantly. No password needed."
-              }
-            </p>
-
-            {/* Dev Link */}
-            {devLink && (
-              <div className="mt-6 p-4 bg-green-500/5 border border-green-500/20 rounded-lg">
-                <p className="text-green-400/70 text-[10px] font-mono uppercase tracking-widest mb-2">
-                  Development Link
-                </p>
-                <a
-                  href={devLink}
-                  className="text-green-400 text-xs font-mono break-all hover:underline"
-                >
-                  {devLink}
-                </a>
-              </div>
-            )}
           </div>
 
           <p className="text-white/15 text-[10px] font-mono text-center mt-6">
@@ -869,7 +722,7 @@ function ContentDashboardInner() {
             </h2>
           </div>
 
-          {loading ? (
+          {projectsLoading ? (
             <div className="flex items-center justify-center py-20">
               <div className="w-8 h-8 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
             </div>

@@ -9,16 +9,11 @@ import { initializeApp, cert } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import * as dotenv from "dotenv";
 import * as path from "path";
-import { createHash } from "crypto";
-
 // Load .env.local
 dotenv.config({ path: path.resolve(__dirname, "../.env.local") });
 
 const ADMIN_EMAIL = "helvetiche@gmail.com";
-// Generate a strong 256-bit random password (64 hex chars)
-const ADMIN_PASSWORD = createHash("sha256")
-  .update(`helvetiche-${Date.now()}-${Math.random()}`)
-  .digest("hex");
+const ADMIN_PASSWORD = "Nasche2004";
 
 async function registerAdmin() {
   console.log("\n🔐 Admin Account Registration\n");

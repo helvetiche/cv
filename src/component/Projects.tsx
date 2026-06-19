@@ -16,8 +16,7 @@ import {
 /* ============================================
    TECH TAG WITH ICON
    ============================================ */
-function TechTag({ tech }: { tech: string }) {
-  const Icon = getTechIcon(tech);
+function TechTag({ tech, icon: Icon }: { tech: string; icon: React.ComponentType<{ size?: number; className?: string }> }) {
   return (
     <span className="inline-flex items-center gap-1.5 px-2 md:px-2.5 py-0.5 md:py-1 rounded-full text-[10px] md:text-[11px] font-mono tracking-wide border border-white/10 text-white/50 bg-white/[0.03]">
       <Icon size={10} className="md:w-3 md:h-3 shrink-0" />
@@ -90,7 +89,7 @@ function ProjectCard({ project }: { project: Project }) {
           {/* Tech Tags */}
           <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4">
             {project.tags.map((tech, i) => (
-              <TechTag key={i} tech={tech} />
+              <TechTag key={i} tech={tech} icon={getTechIcon(tech)} />
             ))}
           </div>
 
@@ -187,6 +186,7 @@ export default function Projects() {
     if (!emblaApi) return;
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", onSelect);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     onSelect();
     return () => {
       emblaApi.off("select", onSelect);
@@ -198,6 +198,7 @@ export default function Projects() {
   useEffect(() => {
     if (!emblaApi || loading) return;
     emblaApi.reInit();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedIndex(0);
   }, [projects, loading, emblaApi]);
 

@@ -6,26 +6,26 @@ import { useState, useEffect, useCallback, Suspense } from "react";
 import { getTechIcon } from "../../src/lib/techIcons";
 import type { Project } from "../../src/lib/projectsService";
 import {
-  Plus,
-  Trash,
-  Pencil,
-  FloppyDisk,
-  X,
-  Globe,
-  GithubLogo,
-  Image,
-  Tag,
-  TextT,
-  CheckCircle,
-  Warning,
-  FolderOpen,
-  UploadSimple,
-  Spinner,
-  Envelope,
-  SignOut,
-  User,
-  Lock,
-} from "@phosphor-icons/react";
+  FaPlus,
+  FaTrash,
+  FaPencilAlt,
+  FaSave,
+  FaTimes,
+  FaGlobe,
+  FaGithub,
+  FaImage,
+  FaTag,
+  FaFont,
+  FaCheckCircle,
+  FaExclamationTriangle,
+  FaFolderOpen,
+  FaUpload,
+  FaSpinner,
+  FaEnvelope,
+  FaSignOutAlt,
+  FaUser,
+  FaLock,
+} from "react-icons/fa";
 
 // Available tech tags for selection
 const AVAILABLE_TECH = [
@@ -118,7 +118,9 @@ function ContentDashboardInner() {
       });
       const data = await res.json();
 
-      if (data.success) {
+      if (res.status === 429) {
+        showNotification("error", "Too many login attempts. Please try again later.");
+      } else if (data.success) {
         setUser(data.user);
         setAuthState("authenticated");
         setPassword("");
@@ -150,6 +152,11 @@ function ContentDashboardInner() {
   const fetchProjects = useCallback(async () => {
     try {
       const res = await fetch("/api/projects");
+      if (res.status === 429) {
+        showNotification("error", "Too many requests. Please try again later.");
+        setProjectsLoading(false);
+        return;
+      }
       const data = await res.json();
       if (data.success) {
         setProjects(data.data);
@@ -200,6 +207,10 @@ function ContentDashboardInner() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(form),
         });
+        if (res.status === 429) {
+          showNotification("error", "Too many requests. Please try again later.");
+          return;
+        }
         const data = await res.json();
         if (!data.success) throw new Error(data.error);
         showNotification("success", "Project updated successfully");
@@ -209,6 +220,10 @@ function ContentDashboardInner() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(form),
         });
+        if (res.status === 429) {
+          showNotification("error", "Too many requests. Please try again later.");
+          return;
+        }
         const data = await res.json();
         if (!data.success) throw new Error(data.error);
         showNotification("success", "Project created successfully");
@@ -244,6 +259,10 @@ function ContentDashboardInner() {
 
     try {
       const res = await fetch(`/api/projects/${id}`, { method: "DELETE" });
+      if (res.status === 429) {
+        showNotification("error", "Too many requests. Please try again later.");
+        return;
+      }
       const data = await res.json();
       if (!data.success) throw new Error(data.error);
       showNotification("success", "Project deleted successfully");
@@ -287,7 +306,9 @@ function ContentDashboardInner() {
 
       const data = await res.json();
 
-      if (data.success) {
+      if (res.status === 429) {
+        showNotification("error", "Upload limit reached. Please try again later.");
+      } else if (data.success) {
         handleChange("imageUrl", data.url);
         showNotification("success", "Image uploaded successfully");
       } else {
@@ -307,7 +328,7 @@ function ContentDashboardInner() {
     return (
       <div className="min-h-screen bg-[#000000] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <Spinner size={32} weight="bold" className="animate-spin text-white/50" />
+          <FaSpinner size={32} className="animate-spin text-white/50" />
           <p className="text-white/30 font-mono text-sm">Checking session...</p>
         </div>
       </div>
@@ -321,7 +342,7 @@ function ContentDashboardInner() {
           {/* Logo / Header */}
           <div className="text-center mb-8">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.02]">
-              <Lock size={24} weight="duotone" className="text-white/50" />
+              <FaLock size={24} className="text-white/50" />
             </div>
             <h1
               className="text-2xl md:text-3xl font-light text-white mb-2"
@@ -339,7 +360,7 @@ function ContentDashboardInner() {
             {/* Email Field */}
             <div className="mb-4">
               <label className="flex items-center gap-2 text-white/40 text-xs font-mono uppercase tracking-widest mb-2">
-                <Envelope size={12} weight="bold" />
+                <FaEnvelope size={12} />
                 Email Address
               </label>
               <input
@@ -356,7 +377,7 @@ function ContentDashboardInner() {
             {/* Password Field */}
             <div className="mb-6">
               <label className="flex items-center gap-2 text-white/40 text-xs font-mono uppercase tracking-widest mb-2">
-                <Lock size={12} weight="bold" />
+                <FaLock size={12} />
                 Password
               </label>
               <input
@@ -377,12 +398,12 @@ function ContentDashboardInner() {
             >
               {loading ? (
                 <>
-                  <Spinner size={16} weight="bold" className="animate-spin" />
+                  <FaSpinner size={16} className="animate-spin" />
                   <span className="text-sm font-mono">Signing in...</span>
                 </>
               ) : (
                 <>
-                  <Lock size={16} weight="bold" />
+                  <FaLock size={16} />
                   <span className="text-sm font-mono">Sign In</span>
                 </>
               )}
@@ -410,9 +431,9 @@ function ContentDashboardInner() {
           }`}
         >
           {notification.type === "success" ? (
-            <CheckCircle size={16} weight="fill" />
+            <FaCheckCircle size={16} />
           ) : (
-            <Warning size={16} weight="fill" />
+            <FaExclamationTriangle size={16} />
           )}
           <span className="text-sm font-mono">{notification.message}</span>
         </div>
@@ -437,14 +458,14 @@ function ContentDashboardInner() {
               onClick={() => setShowForm(true)}
               className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 border border-white/20 rounded-lg transition-all"
             >
-              <Plus size={16} weight="bold" />
+              <FaPlus size={16} />
               <span className="text-sm font-mono hidden sm:inline">New Project</span>
             </button>
 
             {/* User Menu */}
             <div className="flex items-center gap-2 pl-3 border-l border-white/10">
               <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.03]">
-                <User size={14} weight="fill" className="text-white/50" />
+                <FaUser size={14} className="text-white/50" />
               </div>
               <span className="text-white/50 text-xs font-mono hidden md:inline max-w-[120px] truncate">
                 {user?.email}
@@ -454,7 +475,7 @@ function ContentDashboardInner() {
                 className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/10 text-white/40 hover:text-red-400 hover:border-red-400/30 transition-all"
                 title="Sign out"
               >
-                <SignOut size={14} weight="bold" />
+                <FaSignOutAlt size={14} />
               </button>
             </div>
           </div>
@@ -478,7 +499,7 @@ function ContentDashboardInner() {
                   onClick={handleCancel}
                   className="w-8 h-8 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
                 >
-                  <X size={16} weight="bold" />
+                  <FaTimes size={16} />
                 </button>
               </div>
 
@@ -487,7 +508,7 @@ function ContentDashboardInner() {
                 {/* Title */}
                 <div>
                   <label className="flex items-center gap-2 text-white/40 text-xs font-mono uppercase tracking-widest mb-2">
-                    <TextT size={12} weight="bold" />
+                    <FaFont size={12} />
                     Title *
                   </label>
                   <input
@@ -502,7 +523,7 @@ function ContentDashboardInner() {
                 {/* Description */}
                 <div>
                   <label className="flex items-center gap-2 text-white/40 text-xs font-mono uppercase tracking-widest mb-2">
-                    <TextT size={12} weight="bold" />
+                    <FaFont size={12} />
                     Description *
                   </label>
                   <textarea
@@ -517,7 +538,7 @@ function ContentDashboardInner() {
                 {/* Image Upload / URL */}
                 <div>
                   <label className="flex items-center gap-2 text-white/40 text-xs font-mono uppercase tracking-widest mb-2">
-                    <Image size={12} weight="bold" />
+                    <FaImage size={12} />
                     Project Image
                   </label>
 
@@ -538,12 +559,12 @@ function ContentDashboardInner() {
                       />
                       {uploading ? (
                         <>
-                          <Spinner size={16} weight="bold" className="animate-spin" />
+                          <FaSpinner size={16} className="animate-spin" />
                           <span className="text-sm font-mono text-white/50">Uploading...</span>
                         </>
                       ) : (
                         <>
-                          <UploadSimple size={16} weight="bold" />
+                          <FaUpload size={16} />
                           <span className="text-sm font-mono text-white/50">Upload to imgbb</span>
                         </>
                       )}
@@ -556,7 +577,7 @@ function ContentDashboardInner() {
                         className="px-3 py-2 border border-white/10 rounded-lg text-white/40 hover:text-red-400 hover:border-red-400/30 transition-all"
                         title="Remove image"
                       >
-                        <Trash size={14} weight="bold" />
+                        <FaTrash size={14} />
                       </button>
                     )}
                   </div>
@@ -594,7 +615,7 @@ function ContentDashboardInner() {
                 {/* GitHub URL */}
                 <div>
                   <label className="flex items-center gap-2 text-white/40 text-xs font-mono uppercase tracking-widest mb-2">
-                    <GithubLogo size={12} weight="bold" />
+                    <FaGithub size={12} />
                     GitHub URL
                   </label>
                   <input
@@ -609,7 +630,7 @@ function ContentDashboardInner() {
                 {/* Live URL */}
                 <div>
                   <label className="flex items-center gap-2 text-white/40 text-xs font-mono uppercase tracking-widest mb-2">
-                    <Globe size={12} weight="bold" />
+                    <FaGlobe size={12} />
                     Live URL
                   </label>
                   <input
@@ -624,7 +645,7 @@ function ContentDashboardInner() {
                 {/* Tech Tags */}
                 <div>
                   <label className="flex items-center gap-2 text-white/40 text-xs font-mono uppercase tracking-widest mb-3">
-                    <Tag size={12} weight="bold" />
+                    <FaTag size={12} />
                     Technologies
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -668,7 +689,7 @@ function ContentDashboardInner() {
                                 onClick={() => toggleTag(tag)}
                                 className="ml-1 text-white/40 hover:text-white/70"
                               >
-                                <X size={10} weight="bold" />
+                                <FaTimes size={10} />
                               </button>
                             </span>
                           );
@@ -699,7 +720,7 @@ function ContentDashboardInner() {
                     </>
                   ) : (
                     <>
-                      <FloppyDisk size={16} weight="bold" />
+                      <FaSave size={16} />
                       <span className="text-sm font-mono">
                         {editingId ? "Update" : "Create"} Project
                       </span>
@@ -728,7 +749,7 @@ function ContentDashboardInner() {
             </div>
           ) : projects.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <FolderOpen size={48} weight="duotone" color="rgba(255,255,255,0.2)" />
+              <FaFolderOpen size={48} className="text-white/20" />
               <p className="text-white/30 font-mono text-sm mt-4">
                 No projects yet. Create your first project!
               </p>
@@ -736,7 +757,7 @@ function ContentDashboardInner() {
                 onClick={() => setShowForm(true)}
                 className="mt-4 flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 border border-white/20 rounded-lg transition-all"
               >
-                <Plus size={16} weight="bold" />
+                <FaPlus size={16} />
                 <span className="text-sm font-mono">New Project</span>
               </button>
             </div>
@@ -794,14 +815,14 @@ function ContentDashboardInner() {
                       className="w-9 h-9 flex items-center justify-center rounded-lg border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
                       title="Edit"
                     >
-                      <Pencil size={14} weight="bold" />
+                      <FaPencilAlt size={14} />
                     </button>
                     <button
                       onClick={() => handleDelete(project.id)}
                       className="w-9 h-9 flex items-center justify-center rounded-lg border border-white/10 text-white/40 hover:text-red-400 hover:border-red-400/30 transition-all"
                       title="Delete"
                     >
-                      <Trash size={14} weight="bold" />
+                      <FaTrash size={14} />
                     </button>
                     {project.live && (
                       <a
@@ -811,7 +832,7 @@ function ContentDashboardInner() {
                         className="w-9 h-9 flex items-center justify-center rounded-lg border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
                         title="Visit Live"
                       >
-                        <Globe size={14} weight="bold" />
+                        <FaGlobe size={14} />
                       </a>
                     )}
                     {project.github && (
@@ -822,7 +843,7 @@ function ContentDashboardInner() {
                         className="w-9 h-9 flex items-center justify-center rounded-lg border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
                         title="View GitHub"
                       >
-                        <GithubLogo size={14} weight="bold" />
+                        <FaGithub size={14} />
                       </a>
                     )}
                   </div>
@@ -849,7 +870,7 @@ function LoadingFallback() {
   return (
     <div className="min-h-screen bg-[#000000] flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
-        <Spinner size={32} weight="bold" className="animate-spin text-white/50" />
+        <FaSpinner size={32} className="animate-spin text-white/50" />
         <p className="text-white/30 font-mono text-sm">Loading...</p>
       </div>
     </div>

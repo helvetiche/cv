@@ -5,12 +5,12 @@ import useEmblaCarousel from "embla-carousel-react";
 import BorderGlow from "./BorderGlow";
 import GridBackground from "./GridBackground";
 import {
-  Certificate,
-  CaretLeft,
-  CaretRight,
-  GraduationCap,
-  Link,
-} from "@phosphor-icons/react";
+  FaCertificate,
+  FaCaretLeft,
+  FaCaretRight,
+  FaLink,
+} from "react-icons/fa";
+import { GiGraduateCap } from "react-icons/gi";
 
 interface Certification {
   title: string;
@@ -131,7 +131,7 @@ export default function Certifications() {
                       {/* Header */}
                       <div className="flex items-start gap-3 md:gap-4 mb-4 md:mb-6">
                         <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.02] shrink-0">
-                          <Certificate size={18} weight="fill" color="rgba(255,255,255,0.6)" className="md:w-[22px] md:h-[22px]" />
+                          <FaCertificate size={18} className="text-white/60 md:w-[22px] md:h-[22px]" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <h3
@@ -154,7 +154,7 @@ export default function Certifications() {
                       {/* Footer */}
                       <div className="flex items-center justify-between pt-3 md:pt-4 border-t border-white/5">
                         <div className="flex items-center gap-1.5 md:gap-2">
-                          <GraduationCap size={12} weight="fill" color="rgba(255,255,255,0.3)" className="md:w-3.5 md:h-3.5" />
+                          <GiGraduateCap size={12} className="text-white/30 md:w-3.5 md:h-3.5" />
                           <span className="text-white/30 text-[10px] md:text-xs font-mono">
                             Issued {cert.date}
                           </span>
@@ -166,7 +166,7 @@ export default function Certifications() {
                             rel="noopener noreferrer"
                             className="flex items-center gap-1 md:gap-1.5 text-white/40 hover:text-white/70 transition-colors text-[10px] md:text-xs font-mono"
                           >
-                            <Link size={10} weight="bold" className="md:w-3 md:h-3" />
+                            <FaLink size={10} className="md:w-3 md:h-3" />
                             Verify
                           </a>
                         )}
@@ -184,7 +184,7 @@ export default function Certifications() {
               onClick={scrollPrev}
               className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
             >
-              <CaretLeft size={14} weight="bold" className="md:w-4 md:h-4" />
+              <FaCaretLeft size={14} className="md:w-4 md:h-4" />
             </button>
 
             <div className="flex gap-1.5 md:gap-2">
@@ -203,7 +203,7 @@ export default function Certifications() {
               onClick={scrollNext}
               className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
             >
-              <CaretRight size={14} weight="bold" className="md:w-4 md:h-4" />
+              <FaCaretRight size={14} className="md:w-4 md:h-4" />
             </button>
           </div>
         </div>

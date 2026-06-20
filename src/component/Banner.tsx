@@ -2,15 +2,14 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
-  House,
-  Student,
-  Briefcase,
-  Briefcase as BriefcaseIcon,
-  FolderOpen,
-  Envelope,
-  List,
-  X,
-} from "@phosphor-icons/react";
+  FaHome,
+  FaUserGraduate,
+  FaBriefcase,
+  FaFolderOpen,
+  FaEnvelope,
+  FaList,
+  FaTimes,
+} from "react-icons/fa";
 import { gsap } from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -22,11 +21,11 @@ gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
    NAV ITEMS — id matches section IDs in page.tsx
    ============================================ */
 const navItems = [
-  { id: "home", label: "Home", icon: House },
-  { id: "education", label: "Education", icon: Student },
-  { id: "experience", label: "Experience", icon: BriefcaseIcon },
-  { id: "projects", label: "Projects", icon: FolderOpen },
-  { id: "contact", label: "Contact", icon: Envelope },
+  { id: "home", label: "Home", icon: FaHome },
+  { id: "education", label: "Education", icon: FaUserGraduate },
+  { id: "experience", label: "Experience", icon: FaBriefcase },
+  { id: "projects", label: "Projects", icon: FaFolderOpen },
+  { id: "contact", label: "Contact", icon: FaEnvelope },
 ] as const;
 
 type SectionId = (typeof navItems)[number]["id"];
@@ -274,12 +273,7 @@ export default function Banner() {
             onClick={() => handleNavClick("home")}
             className="flex items-center gap-2 flex-shrink-0 min-w-[200px] md:min-w-[260px] cursor-pointer hover:opacity-90 transition-opacity"
           >
-            <Briefcase
-              size={14}
-              weight="fill"
-              color="#ffffff"
-              className="shrink-0"
-            />
+            <FaBriefcase size={14} className="text-white shrink-0" />
             <span className="text-white text-sm md:text-base font-mono tracking-tight">
               {displayText}
               <span
@@ -310,7 +304,6 @@ export default function Banner() {
                 >
                   <Icon
                     size={14}
-                    weight="fill"
                     color={isActive ? "#ffffff" : "rgba(255,255,255,0.4)"}
                   />
                   <span
@@ -333,9 +326,9 @@ export default function Banner() {
             className="md:hidden text-white p-2 hover:opacity-80 transition-opacity ml-auto"
           >
             {menuOpen ? (
-              <X size={20} weight="bold" />
+              <FaTimes size={20} />
             ) : (
-              <List size={20} weight="bold" />
+              <FaList size={20} />
             )}
           </button>
         </div>
@@ -363,7 +356,6 @@ export default function Banner() {
                 >
                   <Icon
                     size={14}
-                    weight="fill"
                     color={isActive ? "#ffffff" : "rgba(255,255,255,0.4)"}
                   />
                   <span className="text-xs font-mono tracking-wide uppercase">

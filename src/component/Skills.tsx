@@ -1,71 +1,66 @@
 "use client";
 
 import {
-  Code,
-  PaintBrush,
-  Database,
-  Cloud,
-  GitBranch,
-  Terminal,
-  Globe,
-  Stack,
-  Wrench,
-} from "@phosphor-icons/react";
-import BorderGlow from "./BorderGlow";
-import GridBackground from "./GridBackground";
-
-type SkillCategory = "frontend" | "backend" | "tools" | "cloud" | "other";
+  SiReact,
+  SiNextdotjs,
+  SiTypescript,
+  SiJavascript,
+  SiTailwindcss,
+  SiNodedotjs,
+  SiPython,
+  SiPhp,
+  SiPostgresql,
+  SiMongodb,
+  SiMysql,
+  SiFirebase,
+  SiRedis,
+  SiVercel,
+  SiDocker,
+  SiGit,
+  SiFigma,
+  SiLinux,
+  SiWebpack,
+  SiVite,
+  SiGraphql,
+} from "react-icons/si";
+import { FaCloud } from "react-icons/fa";
 
 interface Skill {
   name: string;
   icon: React.ElementType;
-  category: SkillCategory;
 }
 
 const skills: Skill[] = [
-  // Frontend
-  { name: "React", icon: Code, category: "frontend" },
-  { name: "Next.js", icon: Globe, category: "frontend" },
-  { name: "TypeScript", icon: Code, category: "frontend" },
-  { name: "JavaScript", icon: Code, category: "frontend" },
-  { name: "Tailwind CSS", icon: PaintBrush, category: "frontend" },
-  { name: "HTML/CSS", icon: PaintBrush, category: "frontend" },
-
-  // Backend
-  { name: "Node.js", icon: Terminal, category: "backend" },
-  { name: "Python", icon: Terminal, category: "backend" },
-  { name: "PHP", icon: Code, category: "backend" },
-  { name: "REST APIs", icon: Stack, category: "backend" },
-  { name: "GraphQL", icon: Stack, category: "backend" },
-
-  // Database
-  { name: "PostgreSQL", icon: Database, category: "backend" },
-  { name: "MongoDB", icon: Database, category: "backend" },
-  { name: "MySQL", icon: Database, category: "backend" },
-  { name: "Firebase", icon: Database, category: "backend" },
-  { name: "Redis", icon: Database, category: "backend" },
-
-  // Cloud & DevOps
-  { name: "AWS", icon: Cloud, category: "cloud" },
-  { name: "Vercel", icon: Cloud, category: "cloud" },
-  { name: "Docker", icon: Cloud, category: "cloud" },
-  { name: "Git", icon: GitBranch, category: "cloud" },
-  { name: "CI/CD", icon: GitBranch, category: "cloud" },
-
-  // Tools & Other
-  { name: "Figma", icon: PaintBrush, category: "tools" },
-  { name: "VS Code", icon: Terminal, category: "tools" },
-  { name: "Linux", icon: Terminal, category: "tools" },
-  { name: "Webpack", icon: Wrench, category: "tools" },
-  { name: "Vite", icon: Wrench, category: "tools" },
+  { name: "React", icon: SiReact },
+  { name: "Next.js", icon: SiNextdotjs },
+  { name: "TypeScript", icon: SiTypescript },
+  { name: "JavaScript", icon: SiJavascript },
+  { name: "Tailwind CSS", icon: SiTailwindcss },
+  { name: "Node.js", icon: SiNodedotjs },
+  { name: "Python", icon: SiPython },
+  { name: "PHP", icon: SiPhp },
+  { name: "GraphQL", icon: SiGraphql },
+  { name: "PostgreSQL", icon: SiPostgresql },
+  { name: "MongoDB", icon: SiMongodb },
+  { name: "MySQL", icon: SiMysql },
+  { name: "Firebase", icon: SiFirebase },
+  { name: "Redis", icon: SiRedis },
+  { name: "AWS", icon: FaCloud },
+  { name: "Vercel", icon: SiVercel },
+  { name: "Docker", icon: SiDocker },
+  { name: "Git", icon: SiGit },
+  { name: "Figma", icon: SiFigma },
+  { name: "Linux", icon: SiLinux },
+  { name: "Webpack", icon: SiWebpack },
+  { name: "Vite", icon: SiVite },
 ];
+
+/* Duplicate the list so the infinite scroll has no gap */
+const track = [...skills, ...skills];
 
 export default function Skills() {
   return (
     <section className="relative w-full bg-[#000000] py-12 md:py-16 lg:py-24 overflow-hidden">
-      {/* Grid Background */}
-      <GridBackground />
-
       {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 lg:px-20">
         {/* Section Header */}
@@ -74,37 +69,39 @@ export default function Skills() {
             className="text-white text-3xl md:text-4xl lg:text-5xl font-light tracking-tight mb-4 md:mb-6"
             style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
           >
-            Skills & Technologies
+            Skills &amp; Technologies
           </h2>
           <p className="text-white/30 text-xs md:text-sm font-mono max-w-lg mx-auto leading-relaxed px-2">
             Technologies and tools I work with to bring ideas to life.
           </p>
         </div>
+      </div>
 
-        {/* Skills Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 md:gap-3 lg:gap-4">
-          {skills.map((skill) => {
+      {/* ── Marquee carousel ── */}
+      <div className="relative w-full overflow-hidden">
+        {/* Fade masks on edges */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 md:w-40 z-10 bg-gradient-to-r from-[#000000] to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 md:w-40 z-10 bg-gradient-to-l from-[#000000] to-transparent" />
+
+        {/* Scrolling track */}
+        <div className="flex w-max animate-marquee">
+          {track.map((skill, i) => {
             const Icon = skill.icon;
             return (
-              <BorderGlow
-                key={skill.name}
-                edgeSensitivity={20}
-                glowColor="0 0 100"
-                backgroundColor="#080808"
-                borderRadius={12}
-                glowRadius={15}
-                glowIntensity={0.2}
-                coneSpread={20}
-                animated={false}
-                colors={["#ffffff", "#ffffff", "#ffffff"]}
+              <div
+                key={`${skill.name}-${i}`}
+                className="flex-shrink-0 w-[140px] md:w-[160px] mx-2 md:mx-3"
               >
-                <div className="p-3 md:p-4 flex flex-col items-center justify-center gap-2 md:gap-3 min-h-[80px] md:min-h-[100px]">
-                  <Icon size={24} weight="duotone" color="rgba(255,255,255,0.5)" className="md:w-7 md:h-7" />
-                  <span className="text-white/60 text-[10px] md:text-xs font-mono tracking-wide text-center">
+                <div className="group relative flex flex-col items-center justify-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm p-4 md:p-5 transition-all duration-300 hover:border-white/15 hover:bg-white/[0.05]">
+                  <Icon
+                    size={28}
+                    className="text-white/40 transition-colors duration-300 group-hover:text-white/70 md:w-8 md:h-8"
+                  />
+                  <span className="text-white/50 text-[11px] md:text-xs font-mono tracking-wide text-center transition-colors duration-300 group-hover:text-white/80">
                     {skill.name}
                   </span>
                 </div>
-              </BorderGlow>
+              </div>
             );
           })}
         </div>
@@ -112,6 +109,24 @@ export default function Skills() {
 
       {/* Divider */}
       <div className="relative z-10 mt-8 md:mt-12 lg:mt-16 w-px h-12 md:h-16 bg-gradient-to-b from-white/10 to-transparent mx-auto" />
+
+      {/* Keyframes injected once */}
+      <style jsx global>{`
+        @keyframes marquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        .animate-marquee {
+          animation: marquee 40s linear infinite;
+        }
+        .animate-marquee:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
     </section>
   );
 }

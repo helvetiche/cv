@@ -1,11 +1,11 @@
-import { LinkedinLogo, GithubLogo, FacebookLogo, Envelope, DownloadSimple } from '@phosphor-icons/react';
+import { FaLinkedin, FaGithub, FaFacebook, FaGoogle, FaDownload } from 'react-icons/fa';
 import BorderGlow from './BorderGlow';
 
 const socials = [
-  { icon: LinkedinLogo, label: 'LinkedIn', href: '#' },
-  { icon: GithubLogo, label: 'GitHub', href: '#' },
-  { icon: FacebookLogo, label: 'Facebook', href: '#' },
-  { icon: Envelope, label: 'Email', href: '#' },
+  { icon: FaLinkedin, label: 'LinkedIn', href: '#' },
+  { icon: FaGithub, label: 'GitHub', href: '#' },
+  { icon: FaFacebook, label: 'Facebook', href: '#' },
+  { icon: FaGoogle, label: 'Email', href: '#' },
 ];
 
 export default function RightContent() {
@@ -25,7 +25,7 @@ export default function RightContent() {
             aria-label={label}
             className="text-white/60 hover:text-white transition-colors p-2"
           >
-            <Icon size={20} weight="fill" className="md:w-6 md:h-6" />
+            <Icon size={20} className="md:w-6 md:h-6" />
           </a>
         ))}
         <div className="relative inline-flex">
@@ -45,7 +45,7 @@ export default function RightContent() {
               style={{ padding: '0.4em 1em', display: 'flex', alignItems: 'center', gap: '0.5em' }}
               className="md:px-6 md:py-2"
             >
-              <DownloadSimple size={14} weight="fill" color="#ffffff" className="md:w-4 md:h-4" />
+              <FaDownload size={14} className="text-white md:w-4 md:h-4" />
               <span className="text-white text-xs md:text-sm font-mono tracking-wide uppercase">
                 Resume
               </span>

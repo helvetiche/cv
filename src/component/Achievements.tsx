@@ -5,87 +5,87 @@ import useEmblaCarousel from "embla-carousel-react";
 import BorderGlow from "./BorderGlow";
 import GridBackground from "./GridBackground";
 import {
-  Megaphone,
-  Trophy,
-  Crown,
-  CaretLeft,
-  CaretRight,
-  CheckCircle,
-  Star,
-  Users,
-  Medal,
-  Presentation,
-  Handshake,
-  GraduationCap,
-  Code,
-  SealCheck,
-} from "@phosphor-icons/react";
+  FaBullhorn,
+  FaTrophy,
+  FaCrown,
+  FaCaretLeft,
+  FaCaretRight,
+  FaCheckCircle,
+  FaStar,
+  FaUsers,
+  FaMedal,
+  FaChalkboardTeacher,
+  FaHandshake,
+  FaCode,
+  FaRibbon,
+} from "react-icons/fa";
+import { GiGraduateCap } from "react-icons/gi";
 
 const filterPills = [
-  { label: "All", icon: Star },
-  { label: "Speaking", icon: Megaphone },
-  { label: "Leadership", icon: Crown },
+  { label: "All", icon: FaStar },
+  { label: "Speaking", icon: FaBullhorn },
+  { label: "Leadership", icon: FaCrown },
 ];
 
 const achievements = [
   {
-    icon: Megaphone,
+    icon: FaBullhorn,
     title: "Resource Speaker",
     category: "speaking",
     description:
       "Served as a resource speaker for children's computer literacy programs, demonstrating Microsoft Word fundamentals to prepare young learners for their junior high school journey. Shared essential digital skills that empowered students to confidently navigate technology in their academic pursuits.",
     highlights: [
-      { icon: Presentation, label: "Computer Literacy" },
-      { icon: Users, label: "Children & Students" },
-      { icon: CheckCircle, label: "Microsoft Word" },
+      { icon: FaChalkboardTeacher, label: "Computer Literacy" },
+      { icon: FaUsers, label: "Children & Students" },
+      { icon: FaCheckCircle, label: "Microsoft Word" },
     ],
   },
   {
-    icon: Trophy,
+    icon: FaTrophy,
     title: "Award-Winning Developer",
     category: "awards",
     description:
       "Won numerous system-building competitions over the course of three years, earning multiple prestigious titles including Best Programmer Awardee, Best System Functionality, Best System Design, Best System Presentation, and Best Overall System — a testament to consistent excellence in software development.",
     highlights: [
-      { icon: Medal, label: "Best Programmer" },
-      { icon: Trophy, label: "Best Overall System" },
-      { icon: Star, label: "3 Years Winning" },
+      { icon: FaMedal, label: "Best Programmer" },
+      { icon: FaTrophy, label: "Best Overall System" },
+      { icon: FaStar, label: "3 Years Winning" },
     ],
   },
   {
-    icon: Crown,
+    icon: FaCrown,
     title: "Student Leader",
     category: "leadership",
     description:
       "Served as Organization President for two consecutive years, widely recognized among peers for being helpful, dedicated, and a role model. Led with integrity, fostered a collaborative environment, and inspired fellow members to grow both personally and professionally.",
     highlights: [
-      { icon: Crown, label: "2 Years President" },
-      { icon: Handshake, label: "Team Builder" },
-      { icon: Users, label: "50+ Members" },
+      { icon: FaCrown, label: "2 Years President" },
+      { icon: FaHandshake, label: "Team Builder" },
+      { icon: FaUsers, label: "50+ Members" },
     ],
   },
   {
-    icon: Medal,
+    icon: FaMedal,
     title: "Magna Cum Laude",
     category: "awards",
     description:
       "Graduated with the distinguished honor of Magna Cum Laude, achieving a General Weighted Average of 1.19. This recognition reflects years of dedication, academic excellence, and consistent performance throughout the Bachelor of Science in Information Technology program.",
     highlights: [
-      { icon: Medal, label: "GWA: 1.19" },
-      { icon: Star, label: "Academic Excellence" },
-      { icon: GraduationCap, label: "BSIT Graduate" },
+      { icon: FaMedal, label: "GWA: 1.19" },
+      { icon: FaStar, label: "Academic Excellence" },
+      { icon: GiGraduateCap, label: "BSIT Graduate" },
     ],
   },
   {
-    icon: Trophy,
+    icon: FaTrophy,
     title: "Academic Awardee",
     category: "awards",
     description:
       "Received multiple prestigious academic awards throughout college, including Outstanding Programmer Awardee, Best in Application & Emerging Technologies, Best Capstone Research Presentation, Best in Web Programming, Diligence Award, Synergy Award, Leadership Award, and Loyalty Award.",
     highlights: [
-      { icon: Code, label: "Best Programmer" },
-      { icon: Presentation, label: "Best Capstone" },
-      { icon: SealCheck, label: "8+ Awards" },
+      { icon: FaCode, label: "Best Programmer" },
+      { icon: FaChalkboardTeacher, label: "Best Capstone" },
+      { icon: FaRibbon, label: "8+ Awards" },
     ],
   },
 ];
@@ -156,7 +156,7 @@ export default function Achievements() {
                     : "bg-transparent border-white/10 text-white/40 hover:text-white/60 hover:border-white/20"
                 }`}
               >
-                <PillIcon size={14} weight="fill" className="md:w-4 md:h-4" />
+                <PillIcon size={14} className="md:w-4 md:h-4" />
                 <span className="text-xs md:text-sm font-mono tracking-wide uppercase">
                   {pill.label}
                 </span>
@@ -194,7 +194,7 @@ export default function Achievements() {
                       {/* Header with Icon */}
                       <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
                         <div className="w-10 h-10 md:w-14 md:h-14 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.02] shrink-0">
-                          <Icon size={20} weight="fill" color="rgba(255,255,255,0.6)" className="md:w-6 md:h-6" />
+                          <Icon size={20} className="text-white/60 md:w-6 md:h-6" />
                         </div>
                         <h3
                           className="text-white text-lg md:text-xl font-light"
@@ -224,7 +224,7 @@ export default function Achievements() {
                                 key={i}
                                 className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1 md:py-1.5 rounded-full border border-white/10 bg-white/[0.03]"
                               >
-                                <HighlightIcon size={10} weight="fill" color="rgba(255,255,255,0.5)" className="md:w-3 md:h-3" />
+                                <HighlightIcon size={10} className="text-white/50 md:w-3 md:h-3" />
                                 <span className="text-[10px] md:text-xs font-mono tracking-wide text-white/50">
                                   {highlight.label}
                                 </span>
@@ -247,7 +247,7 @@ export default function Achievements() {
             onClick={scrollPrev}
             className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
           >
-            <CaretLeft size={14} weight="bold" className="md:w-4 md:h-4" />
+            <FaCaretLeft size={14} className="md:w-4 md:h-4" />
           </button>
 
           <div className="flex gap-1.5 md:gap-2">
@@ -266,7 +266,7 @@ export default function Achievements() {
             onClick={scrollNext}
             className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
           >
-            <CaretRight size={14} weight="bold" className="md:w-4 md:h-4" />
+            <FaCaretRight size={14} className="md:w-4 md:h-4" />
           </button>
         </div>
       </div>

@@ -1,37 +1,37 @@
 "use client";
 
 import {
-  Envelope,
-  LinkedinLogo,
-  GithubLogo,
-  FacebookLogo,
-  MapPin,
-  PaperPlaneTilt,
-} from "@phosphor-icons/react";
+  FaLinkedin,
+  FaGithub,
+  FaFacebook,
+  FaGoogle,
+  FaMapMarkerAlt,
+  FaPaperPlane,
+} from "react-icons/fa";
 import BorderGlow from "./BorderGlow";
 import GridBackground from "./GridBackground";
 
 const socialLinks = [
   {
-    icon: Envelope,
+    icon: FaGoogle,
     label: "Email",
     value: "nasche.delponso@email.com",
     href: "mailto:nasche.delponso@email.com",
   },
   {
-    icon: LinkedinLogo,
+    icon: FaLinkedin,
     label: "LinkedIn",
     value: "linkedin.com/in/naschedelponso",
     href: "#",
   },
   {
-    icon: GithubLogo,
+    icon: FaGithub,
     label: "GitHub",
     value: "github.com/naschedelponso",
     href: "#",
   },
   {
-    icon: FacebookLogo,
+    icon: FaFacebook,
     label: "Facebook",
     value: "facebook.com/naschedelponso",
     href: "#",
@@ -83,7 +83,7 @@ export default function Contact() {
                 >
                   <div className="p-4 md:p-5 flex items-center gap-3 md:gap-4">
                     <div className="w-9 h-9 md:w-10 md:h-10 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.02] shrink-0">
-                      <Icon size={16} weight="fill" color="rgba(255,255,255,0.6)" className="md:w-[18px] md:h-[18px]" />
+                      <Icon size={16} className="text-white/60 md:w-[18px] md:h-[18px]" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-white/30 text-[9px] md:text-[10px] font-mono uppercase tracking-widest mb-0.5 md:mb-1">
@@ -114,7 +114,7 @@ export default function Contact() {
         >
           <div className="p-4 md:p-5 flex items-center gap-3 md:gap-4">
             <div className="w-9 h-9 md:w-10 md:h-10 rounded-full border border-white/10 flex items-center justify-center bg-white/[0.02] shrink-0">
-              <MapPin size={16} weight="fill" color="rgba(255,255,255,0.6)" className="md:w-[18px] md:h-[18px]" />
+              <FaMapMarkerAlt size={16} className="text-white/60 md:w-[18px] md:h-[18px]" />
             </div>
             <div className="flex-1">
               <p className="text-white/30 text-[9px] md:text-[10px] font-mono uppercase tracking-widest mb-0.5 md:mb-1">
@@ -133,7 +133,7 @@ export default function Contact() {
             href="mailto:nasche.delponso@email.com"
             className="inline-flex items-center gap-2 px-6 py-3 md:px-8 md:py-4 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all duration-300 bg-white/[0.03] hover:bg-white/[0.06]"
           >
-            <PaperPlaneTilt size={16} weight="fill" className="md:w-[18px] md:h-[18px]" />
+            <FaPaperPlane size={16} className="md:w-[18px] md:h-[18px]" />
             <span className="text-xs md:text-sm font-mono tracking-wide uppercase">
               Send Me a Message
             </span>

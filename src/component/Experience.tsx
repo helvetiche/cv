@@ -5,24 +5,24 @@ import useEmblaCarousel from "embla-carousel-react";
 import BorderGlow from "./BorderGlow";
 import GridBackground from "./GridBackground";
 import {
-  Calendar,
-  Rocket,
-  Code,
-  PaintBrush,
-  GraduationCap,
-  CaretLeft,
-  CaretRight,
-  ListChecks,
-  Briefcase,
-} from "@phosphor-icons/react";
+  FaCalendarAlt,
+  FaRocket,
+  FaCode,
+  FaPaintBrush,
+  FaCaretLeft,
+  FaCaretRight,
+  FaTasks,
+  FaBriefcase,
+} from "react-icons/fa";
+import { GiGraduateCap } from "react-icons/gi";
 
 /* ============================================
    FILTER PILLS
    ============================================ */
 const filterPills = [
-  { label: "All", icon: Briefcase },
-  { label: "Work", icon: Code },
-  { label: "Leadership", icon: GraduationCap },
+  { label: "All", icon: FaBriefcase },
+  { label: "Work", icon: FaCode },
+  { label: "Leadership", icon: GiGraduateCap },
 ];
 
 /* ============================================
@@ -54,7 +54,7 @@ const experienceData: ExperienceItem[] = [
       "Research for the best practices based on the client's requirements",
     ],
     technologies: ["React", "Next.js", "TypeScript", "Firebase", "Redis", "Upstash", "Tailwind CSS"],
-    icon: Rocket,
+    icon: FaRocket,
     images: [
       "/freelancing/image-1.png",
       "/freelancing/image-2.png",
@@ -76,7 +76,7 @@ const experienceData: ExperienceItem[] = [
       "Documented system processes and provided user training",
     ],
     technologies: ["Node.js", "JavaScript", "Excel", "Automation"],
-    icon: Code,
+    icon: FaCode,
     images: [
       "/intern/image-1.png",
       "/intern/image-2.png",
@@ -98,7 +98,7 @@ const experienceData: ExperienceItem[] = [
       "Mentored members in technical skills and professional growth",
     ],
     technologies: ["Leadership", "Event Management", "Public Speaking", "Team Building"],
-    icon: GraduationCap,
+    icon: GiGraduateCap,
     images: [
       "/cics/image-1.png",
       "/cics/image-2.png",
@@ -120,7 +120,7 @@ const experienceData: ExperienceItem[] = [
       "Coordinated with the events team to ensure timely and accurate information dissemination",
     ],
     technologies: ["Social Media Management", "Content Creation", "Facebook", "Communication"],
-    icon: PaintBrush,
+    icon: FaPaintBrush,
     images: [
       "/smm/image-1.png",
       "/smm/image-2.png",
@@ -142,7 +142,7 @@ const experienceData: ExperienceItem[] = [
       "Managed production timelines and coordinated with cast and crew",
     ],
     technologies: ["Film Direction", "Cinematography", "Editing", "Scriptwriting", "Sound Design"],
-    icon: GraduationCap,
+    icon: GiGraduateCap,
     images: [
       "/film/image-1.png",
       "/film/image-2.png",
@@ -205,13 +205,13 @@ function ImageCarousel({ images }: { images: string[] }) {
             onClick={scrollPrev}
             className="w-8 h-8 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
           >
-            <CaretLeft size={14} weight="bold" />
+            <FaCaretLeft size={14} />
           </button>
           <button
             onClick={scrollNext}
             className="w-8 h-8 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
           >
-            <CaretRight size={14} weight="bold" />
+            <FaCaretRight size={14} />
           </button>
         </div>
         <div className="flex gap-1.5">
@@ -243,7 +243,7 @@ function TimelineCard({ item }: { item: ExperienceItem }) {
       {/* ---- TIMELINE DOT & LINE (hidden on mobile) ---- */}
       <div className="hidden md:flex flex-col items-center pl-4 lg:pl-8 pr-6 lg:pr-10 relative">
         <div className="relative z-10 flex items-center justify-center w-11 h-11 rounded-full border border-white/20 bg-[#000000] transition-all duration-300 group-hover:scale-110 group-hover:border-white/50">
-          <Icon size={18} weight="fill" color="rgba(255,255,255,0.8)" />
+          <Icon size={18} className="text-white/80" />
         </div>
       </div>
 
@@ -266,7 +266,7 @@ function TimelineCard({ item }: { item: ExperienceItem }) {
               {/* Period */}
               <header className="mb-4 md:mb-6 lg:mb-8">
                 <div className="flex items-center gap-2 mb-2 md:mb-4">
-                  <Calendar size={12} weight="fill" color="rgba(255,255,255,0.4)" className="md:w-3.5 md:h-3.5" />
+                  <FaCalendarAlt size={12} className="text-white/40 md:w-3.5 md:h-3.5" />
                   <time className="text-xs md:text-sm font-mono tracking-widest uppercase text-white/40">
                     {item.year}
                   </time>
@@ -293,7 +293,7 @@ function TimelineCard({ item }: { item: ExperienceItem }) {
               {/* Responsibilities */}
               <div className="mb-4 md:mb-6 lg:mb-8">
                 <div className="flex items-center gap-2 mb-3 md:mb-4">
-                  <ListChecks size={12} weight="fill" color="rgba(255,255,255,0.3)" className="md:w-3.5 md:h-3.5" />
+                  <FaTasks size={12} className="text-white/30 md:w-3.5 md:h-3.5" />
                   <span className="text-[10px] md:text-xs font-mono uppercase tracking-[0.15em] text-white/30">
                     Responsibilities
                   </span>
@@ -397,7 +397,7 @@ export default function Experience() {
                     : "bg-transparent border-white/10 text-white/40 hover:text-white/60 hover:border-white/20"
                 }`}
               >
-                <PillIcon size={14} weight="fill" className="md:w-4 md:h-4" />
+                <PillIcon size={14} className="md:w-4 md:h-4" />
                 <span className="text-xs md:text-sm font-mono tracking-wide uppercase">
                   {pill.label}
                 </span>

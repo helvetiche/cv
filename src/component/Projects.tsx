@@ -7,11 +7,11 @@ import GridBackground from "./GridBackground";
 import { getProjects, type Project } from "../lib/projectsService";
 import { getTechIcon } from "../lib/techIcons";
 import {
-  CaretLeft,
-  CaretRight,
-  Globe,
-  GithubLogo,
-} from "@phosphor-icons/react";
+  FaCaretLeft,
+  FaCaretRight,
+  FaGlobe,
+  FaGithub,
+} from "react-icons/fa";
 
 /* ============================================
    TECH TAG WITH ICON
@@ -103,7 +103,7 @@ function ProjectCard({ project }: { project: Project }) {
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 text-white/40 hover:text-white/70 transition-colors text-[10px] md:text-xs font-mono uppercase tracking-wide"
                 >
-                  <Globe size={12} weight="bold" className="md:w-3.5 md:h-3.5" />
+                  <FaGlobe size={12} className="md:w-3.5 md:h-3.5" />
                   Live
                 </a>
               )}
@@ -114,7 +114,7 @@ function ProjectCard({ project }: { project: Project }) {
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 text-white/40 hover:text-white/70 transition-colors text-[10px] md:text-xs font-mono uppercase tracking-wide"
                 >
-                  <GithubLogo size={12} weight="bold" className="md:w-3.5 md:h-3.5" />
+                  <FaGithub size={12} className="md:w-3.5 md:h-3.5" />
                   GitHub
                 </a>
               )}
@@ -264,7 +264,7 @@ export default function Projects() {
                   onClick={scrollPrev}
                   className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
                 >
-                  <CaretLeft size={14} weight="bold" className="md:w-4 md:h-4" />
+                  <FaCaretLeft size={14} className="md:w-4 md:h-4" />
                 </button>
 
                 <div className="flex gap-1 md:gap-1.5 max-w-[120px] md:max-w-none overflow-hidden">
@@ -283,7 +283,7 @@ export default function Projects() {
                   onClick={scrollNext}
                   className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-white/10 text-white/40 hover:text-white/70 hover:border-white/20 transition-all"
                 >
-                  <CaretRight size={14} weight="bold" className="md:w-4 md:h-4" />
+                  <FaCaretRight size={14} className="md:w-4 md:h-4" />
                 </button>
               </div>
             )}

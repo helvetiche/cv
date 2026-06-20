@@ -1,19 +1,19 @@
 "use client";
 
 import {
-  ArrowUp,
-  LinkedinLogo,
-  GithubLogo,
-  FacebookLogo,
-  Envelope,
-  Student,
-} from "@phosphor-icons/react";
+  FaLinkedin,
+  FaGithub,
+  FaFacebook,
+  FaGoogle,
+  FaArrowUp,
+  FaUserGraduate,
+} from "react-icons/fa";
 
 const socialLinks = [
-  { icon: LinkedinLogo, label: "LinkedIn", href: "#" },
-  { icon: GithubLogo, label: "GitHub", href: "#" },
-  { icon: FacebookLogo, label: "Facebook", href: "#" },
-  { icon: Envelope, label: "Email", href: "mailto:nasche.delponso@email.com" },
+  { icon: FaLinkedin, label: "LinkedIn", href: "#" },
+  { icon: FaGithub, label: "GitHub", href: "#" },
+  { icon: FaFacebook, label: "Facebook", href: "#" },
+  { icon: FaGoogle, label: "Email", href: "mailto:nasche.delponso@email.com" },
 ];
 
 export default function Footer() {
@@ -29,7 +29,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between w-full gap-4">
             {/* Left: Logo/Name */}
             <div className="flex items-center gap-2 md:gap-3">
-              <Student size={18} weight="fill" color="rgba(255,255,255,0.5)" className="md:w-5 md:h-5" />
+              <FaUserGraduate size={18} className="text-white/50 md:w-5 md:h-5" />
               <span
                 className="text-white/50 text-sm md:text-base font-light"
                 style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}
@@ -54,7 +54,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="text-white/30 hover:text-white/70 transition-colors duration-200 p-1"
                 >
-                  <Icon size={16} weight="fill" className="md:w-[18px] md:h-[18px]" />
+                  <Icon size={16} className="md:w-[18px] md:h-[18px]" />
                 </a>
               ))}
 
@@ -64,7 +64,7 @@ export default function Footer() {
                 className="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full border border-white/10 text-white/30 hover:text-white/70 hover:border-white/20 transition-all duration-200 ml-1 md:ml-2"
                 aria-label="Back to top"
               >
-                <ArrowUp size={12} weight="bold" className="md:w-3.5 md:h-3.5" />
+                <FaArrowUp size={12} className="md:w-3.5 md:h-3.5" />
               </button>
             </div>
           </div>

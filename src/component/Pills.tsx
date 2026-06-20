@@ -1,10 +1,10 @@
-import { Code, PaintBrush, Sparkle } from '@phosphor-icons/react';
+import { FaCode, FaPaintBrush, FaMagic } from 'react-icons/fa';
 import BorderGlow from './BorderGlow';
 
 const pills = [
-  { label: 'DEVELOPER', icon: Code },
-  { label: 'DESIGNER', icon: PaintBrush },
-  { label: 'CREATOR', icon: Sparkle },
+  { label: 'DEVELOPER', icon: FaCode },
+  { label: 'DESIGNER', icon: FaPaintBrush },
+  { label: 'CREATOR', icon: FaMagic },
 ];
 
 export default function Pills() {
@@ -24,7 +24,7 @@ export default function Pills() {
           colors={['#c084fc', '#f472b6', '#38bdf8']}
         >
           <div style={{ padding: '0.4em 1em', display: 'flex', alignItems: 'center', gap: '0.5em' }} className="md:px-6 md:py-2">
-            <Icon size={14} weight="fill" color="#ffffff" />
+            <Icon size={14} className="text-white" />
             <span
               className="text-white text-xs md:text-sm font-mono tracking-wide uppercase"
             >

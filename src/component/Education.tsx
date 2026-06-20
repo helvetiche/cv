@@ -3,35 +3,35 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import {
-  Student,
-  GraduationCap,
-  Medal,
-  Trophy,
-  Star,
-  Code,
-  Presentation,
-  SealCheck,
-  Handshake,
-  Crown,
-  Heart,
-  BookOpen,
-  Atom,
-  Monitor,
-  Globe,
-  ChalkboardTeacher,
-  Backpack, 
-} from "@phosphor-icons/react";
+  FaUserGraduate,
+  FaMedal,
+  FaTrophy,
+  FaStar,
+  FaCode,
+  FaChalkboardTeacher,
+  FaHandshake,
+  FaCrown,
+  FaHeart,
+  FaGlobe,
+  FaLaptop,
+  FaMicroscope,
+  FaBookOpen,
+  FaSchool,
+  FaRibbon,
+} from "react-icons/fa";
+import { GiGraduateCap, GiBackpack } from "react-icons/gi";
+import { MdOutlineMonitor } from "react-icons/md";
 
 const awards = [
-  { label: "Magna Cum Laude (GWA: 1.19)", icon: Medal, gold: true },
-  { label: "Outstanding Programmer Awardee", icon: Code, gold: false },
-  { label: "Best in Application & Emerging Technologies", icon: Star, gold: false },
-  { label: "Best Capstone Research Presentation Award", icon: Presentation, gold: false },
-  { label: "Best in Web Programming", icon: Code, gold: false },
-  { label: "Diligence Award", icon: SealCheck, gold: false },
-  { label: "Synergy Award", icon: Handshake, gold: false },
-  { label: "Leadership Award", icon: Crown, gold: false },
-  { label: "Loyalty Award", icon: Heart, gold: false },
+  { label: "Magna Cum Laude (GWA: 1.19)", icon: FaMedal, gold: true },
+  { label: "Outstanding Programmer Awardee", icon: FaCode, gold: false },
+  { label: "Best in Application & Emerging Technologies", icon: FaStar, gold: false },
+  { label: "Best Capstone Research Presentation Award", icon: FaChalkboardTeacher, gold: false },
+  { label: "Best in Web Programming", icon: FaCode, gold: false },
+  { label: "Diligence Award", icon: FaRibbon, gold: false },
+  { label: "Synergy Award", icon: FaHandshake, gold: false },
+  { label: "Leadership Award", icon: FaCrown, gold: false },
+  { label: "Loyalty Award", icon: FaHeart, gold: false },
 ];
 
 const educationData = [
@@ -41,7 +41,7 @@ const educationData = [
     school: "Marian College of Baliuag, Inc",
     description: "",
     badge: "Magna Cum Laude",
-    badgeIcon: Medal,
+    badgeIcon: FaMedal,
     awards: awards,
   },
   {
@@ -50,11 +50,11 @@ const educationData = [
     school: "Marian College of Baliuag, Inc",
     description: "",
     badge: "With Honors",
-    badgeIcon: Trophy,
+    badgeIcon: FaTrophy,
     awards: [
-      { label: "With Honors (Average: 91.5)", icon: Trophy, gold: true },
-      { label: "Best HUMSS Research", icon: Presentation, gold: false },
-      { label: "Loyalty Award", icon: Heart, gold: false },
+      { label: "With Honors (Average: 91.5)", icon: FaTrophy, gold: true },
+      { label: "Best HUMSS Research", icon: FaChalkboardTeacher, gold: false },
+      { label: "Loyalty Award", icon: FaHeart, gold: false },
     ],
   },
   {
@@ -63,24 +63,24 @@ const educationData = [
     school: "Marian College of Baliuag, Inc",
     description: "",
     badge: "With Honors",
-    badgeIcon: Trophy,
+    badgeIcon: FaTrophy,
     awards: [
-      { label: "With Honors (Average: 90.2)", icon: Trophy, gold: true },
-      { label: "Best in English", icon: BookOpen, gold: false },
-      { label: "Best in TLE", icon: Monitor, gold: false },
-      { label: "Best in Science", icon: Atom, gold: false },
-      { label: "Best in Computer", icon: Monitor, gold: false },
-      { label: "Best in A.P.", icon: Globe, gold: false },
+      { label: "With Honors (Average: 90.2)", icon: FaTrophy, gold: true },
+      { label: "Best in English", icon: FaBookOpen, gold: false },
+      { label: "Best in TLE", icon: MdOutlineMonitor, gold: false },
+      { label: "Best in Science", icon: FaMicroscope, gold: false },
+      { label: "Best in Computer", icon: FaLaptop, gold: false },
+      { label: "Best in A.P.", icon: FaGlobe, gold: false },
     ],
   },
 ];
 
-const degreeIcons = [GraduationCap, Student, Student];
+const degreeIcons = [GiGraduateCap, FaUserGraduate, FaUserGraduate];
 
 const filterPills = [
-  { label: "College", icon: GraduationCap },
-  { label: "SHS", icon: ChalkboardTeacher },
-  { label: "JHS", icon: Backpack },
+  { label: "College", icon: GiGraduateCap },
+  { label: "SHS", icon: FaChalkboardTeacher },
+  { label: "JHS", icon: GiBackpack },
 ];
 
 export default function Education() {
@@ -144,7 +144,7 @@ export default function Education() {
                   : "bg-transparent border-white/10 text-white/40 hover:text-white/60 hover:border-white/20"
               }`}
             >
-              <PillIcon size={14} weight="fill" className="md:w-4 md:h-4" />
+              <PillIcon size={14} className="md:w-4 md:h-4" />
               <span className="text-xs md:text-sm font-mono tracking-wide uppercase">
                 {pill.label}
               </span>
@@ -198,8 +198,7 @@ export default function Education() {
                     >
                       <BadgeIcon
                         size={12}
-                        weight="fill"
-                        color={isGold ? "#eab308" : "#ffffff"}
+                        className={isGold ? "text-yellow-500" : "text-white"}
                       />
                       <span
                         style={
@@ -223,7 +222,7 @@ export default function Education() {
                     <span className="text-white/40 text-xs md:text-sm font-mono tracking-wider uppercase">
                       {item.year}
                     </span>
-                    <DegreeIcon size={16} weight="duotone" color="#ffffff66" className="md:w-[18px] md:h-[18px]" />
+                    <DegreeIcon size={16} className="text-white/60 md:w-[18px] md:h-[18px]" />
                   </div>
 
                   <h3
@@ -257,9 +256,7 @@ export default function Education() {
                             >
                               <AwardIcon
                                 size={12}
-                                weight="fill"
-                                color={award.gold ? "#eab308" : "#ffffff44"}
-                                className="md:w-3.5 md:h-3.5"
+                                className={award.gold ? "text-yellow-500 md:w-3.5 md:h-3.5" : "text-white/40 md:w-3.5 md:h-3.5"}
                               />
                               <span
                                 className="text-[10px] md:text-xs font-mono"

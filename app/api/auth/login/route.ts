@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminAuth } from "../../../../src/lib/firebase-admin";
+import { csrfCheck, securityHeaders } from "../../../../src/lib/auth-middleware";
 
 // Simple in-memory rate limiter (use Redis in production with multiple instances)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -53,10 +54,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // CSRF: Verify Origin/Referer matches expected site
-    const origin = request.headers.get("origin") || request.headers.get("referer") || "";
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
-    if (siteUrl && origin && !origin.startsWith(siteUrl)) {
+    if (!csrfCheck(request)) {
       return NextResponse.json(
         { success: false, error: "Invalid request origin" },
         { status: 403 }
@@ -144,14 +142,16 @@ export async function POST(request: NextRequest) {
       expiresIn: 60 * 60 * 24 * 5 * 1000, // 5 days
     });
 
-    const response = NextResponse.json({
-      success: true,
-      message: "Signed in successfully",
-      user: {
-        uid: userRecord.uid,
-        email: userRecord.email,
-      },
-    });
+    const response = securityHeaders(
+      NextResponse.json({
+        success: true,
+        message: "Signed in successfully",
+        user: {
+          uid: userRecord.uid,
+          email: userRecord.email,
+        },
+      })
+    );
 
     // Set rate limit headers on success
     response.headers.set("X-RateLimit-Limit", String(MAX_ATTEMPTS));

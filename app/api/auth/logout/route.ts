@@ -1,21 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
+import { csrfCheck, securityHeaders } from "../../../../src/lib/auth-middleware";
 
 export async function POST(request: NextRequest) {
   try {
-    // CSRF: Verify Origin/Referer matches expected site
-    const origin = request.headers.get("origin") || request.headers.get("referer") || "";
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
-    if (siteUrl && origin && !origin.startsWith(siteUrl)) {
+    if (!csrfCheck(request)) {
       return NextResponse.json(
         { success: false, error: "Invalid request origin" },
         { status: 403 }
       );
     }
 
-    const response = NextResponse.json({
-      success: true,
-      message: "Signed out successfully",
-    });
+    const response = securityHeaders(
+      NextResponse.json({
+        success: true,
+        message: "Signed out successfully",
+      })
+    );
 
     // Clear the session cookie
     response.cookies.set("__session", "", {

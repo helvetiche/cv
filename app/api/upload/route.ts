@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Rate limiting: 20 uploads per hour per user
-    const { success: rateOk, limit, reset, remaining } = await uploadLimiter.limit(user.uid);
+    const { success: rateOk, limit, reset } = await uploadLimiter.limit(user.uid);
     if (!rateOk) {
       return NextResponse.json(
         { success: false, error: "Upload limit reached. Try again later." },

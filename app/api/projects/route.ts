@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Rate limiting: 60 requests per minute per user
-    const { success: rateOk, limit, reset, remaining } = await apiLimiter.limit(user.uid);
+    const { success: rateOk, limit, reset } = await apiLimiter.limit(user.uid);
     if (!rateOk) {
       return NextResponse.json(
         { success: false, error: "Too many requests. Try again later." },
@@ -63,6 +63,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
+      );
+    }
+
+    // Rate limiting: 60 requests per minute per user
+    const { success: rateOk, limit, reset } = await apiLimiter.limit(user.uid);
+    if (!rateOk) {
+      return NextResponse.json(
+        { success: false, error: "Too many requests. Try again later." },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(Math.ceil((reset - Date.now()) / 1000)),
+            "X-RateLimit-Limit": String(limit),
+            "X-RateLimit-Remaining": "0",
+            "X-RateLimit-Reset": String(Math.ceil(reset / 1000)),
+          },
+        }
       );
     }
 

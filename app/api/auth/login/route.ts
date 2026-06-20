@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminAuth } from "../../../../src/lib/firebase-admin";
 import { csrfCheck, securityHeaders } from "../../../../src/lib/auth-middleware";
-
-// Simple in-memory rate limiter (use Redis in production with multiple instances)
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-
-const MAX_ATTEMPTS = 5;
-const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+import { loginLimiter } from "../../../../src/lib/rate-limit";
 
 function getClientIp(request: NextRequest): string {
   const xff = request.headers.get("x-forwarded-for");
@@ -16,38 +11,23 @@ function getClientIp(request: NextRequest): string {
   return "unknown";
 }
 
-function checkRateLimit(identifier: string): { allowed: boolean; remaining: number; retryAfter?: number } {
-  const now = Date.now();
-  const entry = rateLimitMap.get(identifier);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(identifier, { count: 1, resetAt: now + WINDOW_MS });
-    return { allowed: true, remaining: MAX_ATTEMPTS - 1 };
-  }
-
-  if (entry.count >= MAX_ATTEMPTS) {
-    return { allowed: false, remaining: 0, retryAfter: Math.ceil((entry.resetAt - now) / 1000) };
-  }
-
-  entry.count++;
-  return { allowed: true, remaining: MAX_ATTEMPTS - entry.count };
-}
-
 export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
 
-  // Rate limiting check
-  const rateLimit = checkRateLimit(clientIp);
-  if (!rateLimit.allowed) {
+  // Distributed rate limiting via Upstash Redis
+  const { success, limit, reset, remaining } = await loginLimiter.limit(clientIp);
+
+  if (!success) {
+    const retryAfter = Math.ceil((reset - Date.now()) / 1000);
     return NextResponse.json(
       { success: false, error: "Too many login attempts. Please try again later." },
       {
         status: 429,
         headers: {
-          "Retry-After": String(rateLimit.retryAfter),
-          "X-RateLimit-Limit": String(MAX_ATTEMPTS),
+          "Retry-After": String(retryAfter),
+          "X-RateLimit-Limit": String(limit),
           "X-RateLimit-Remaining": "0",
-          "X-RateLimit-Reset": String(Math.ceil(Date.now() / 1000) + (rateLimit.retryAfter || 0)),
+          "X-RateLimit-Reset": String(Math.ceil(reset / 1000)),
         },
       }
     );
@@ -154,8 +134,9 @@ export async function POST(request: NextRequest) {
     );
 
     // Set rate limit headers on success
-    response.headers.set("X-RateLimit-Limit", String(MAX_ATTEMPTS));
-    response.headers.set("X-RateLimit-Remaining", String(rateLimit.remaining));
+    response.headers.set("X-RateLimit-Limit", String(limit));
+    response.headers.set("X-RateLimit-Remaining", String(remaining));
+    response.headers.set("X-RateLimit-Reset", String(Math.ceil(reset / 1000)));
 
     response.cookies.set("__session", sessionCookie, {
       httpOnly: true,

@@ -1,11 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminDb } from "@/src/lib/firebase-admin";
+import { requireAuth, csrfCheck, securityHeaders } from "@/src/lib/auth-middleware";
 
 const COLLECTION = "projects";
 
-// GET all projects
-export async function GET() {
+// GET all projects (protected)
+export async function GET(request: NextRequest) {
   try {
+    const user = await requireAuth(request);
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
     const snapshot = await adminDb
       .collection(COLLECTION)
       .orderBy("createdAt", "desc")
@@ -16,7 +25,9 @@ export async function GET() {
       ...doc.data(),
     }));
 
-    return NextResponse.json({ success: true, data: projects });
+    return securityHeaders(
+      NextResponse.json({ success: true, data: projects })
+    );
   } catch (error) {
     console.error("GET projects error:", error);
     return NextResponse.json(
@@ -26,9 +37,24 @@ export async function GET() {
   }
 }
 
-// CREATE new project
+// CREATE new project (protected)
 export async function POST(request: NextRequest) {
   try {
+    const user = await requireAuth(request);
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    if (!csrfCheck(request)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid request origin" },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { title, description, tags, imageUrl, github, live } = body;
 
@@ -51,10 +77,12 @@ export async function POST(request: NextRequest) {
       updatedAt: now,
     });
 
-    return NextResponse.json({
-      success: true,
-      data: { id: docRef.id, title, description, tags, imageUrl, github, live, createdAt: now, updatedAt: now },
-    });
+    return securityHeaders(
+      NextResponse.json({
+        success: true,
+        data: { id: docRef.id, title, description, tags, imageUrl, github, live, createdAt: now, updatedAt: now },
+      })
+    );
   } catch (error) {
     console.error("POST project error:", error);
     return NextResponse.json(

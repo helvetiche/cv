@@ -1,14 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminDb } from "@/src/lib/firebase-admin";
+import { requireAuth, csrfCheck, securityHeaders } from "@/src/lib/auth-middleware";
 
 const COLLECTION = "projects";
 
-// UPDATE project
+// UPDATE project (protected)
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await requireAuth(request);
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    if (!csrfCheck(request)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid request origin" },
+        { status: 403 }
+      );
+    }
+
     const { id } = await params;
     const body = await request.json();
     const { title, description, tags, imageUrl, github, live } = body;
@@ -31,7 +47,7 @@ export async function PUT(
       updatedAt: now,
     });
 
-    return NextResponse.json({ success: true });
+    return securityHeaders(NextResponse.json({ success: true }));
   } catch (error) {
     console.error("PUT project error:", error);
     return NextResponse.json(
@@ -41,15 +57,30 @@ export async function PUT(
   }
 }
 
-// DELETE project
+// DELETE project (protected)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await requireAuth(request);
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    if (!csrfCheck(request)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid request origin" },
+        { status: 403 }
+      );
+    }
+
     const { id } = await params;
     await adminDb.collection(COLLECTION).doc(id).delete();
-    return NextResponse.json({ success: true });
+    return securityHeaders(NextResponse.json({ success: true }));
   } catch (error) {
     console.error("DELETE project error:", error);
     return NextResponse.json(

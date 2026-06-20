@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
+    // CSRF: Verify Origin/Referer
+    const origin = request.headers.get("origin") || request.headers.get("referer") || "";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
+    if (siteUrl && origin && !origin.startsWith(siteUrl)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid request origin" },
+        { status: 403 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get("image") as File | null;
 
@@ -29,7 +39,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Upload to imgbb
-    const imgbbKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+    const imgbbKey = process.env.IMGBB_API_KEY;
     if (!imgbbKey) {
       return NextResponse.json(
         { success: false, error: "imgbb API key not configured" },

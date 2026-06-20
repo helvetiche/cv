@@ -1,7 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
+    // CSRF: Verify Origin/Referer matches expected site
+    const origin = request.headers.get("origin") || request.headers.get("referer") || "";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
+    if (siteUrl && origin && !origin.startsWith(siteUrl)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid request origin" },
+        { status: 403 }
+      );
+    }
+
     const response = NextResponse.json({
       success: true,
       message: "Signed out successfully",
@@ -11,7 +21,7 @@ export async function POST() {
     response.cookies.set("__session", "", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "strict",
       maxAge: 0,
       path: "/",
     });

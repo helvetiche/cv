@@ -16,7 +16,6 @@ import {
   FaLaptop,
   FaMicroscope,
   FaBookOpen,
-  FaSchool,
   FaRibbon,
 } from "react-icons/fa";
 import { GiGraduateCap, GiBackpack } from "react-icons/gi";

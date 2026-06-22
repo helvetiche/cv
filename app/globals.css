@@ -24,12 +24,10 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
-
-/* ============================================
-   RESPONSIVE UTILITIES
-   ============================================ */
-
-/* Hide scrollbar but keep functionality */
+html{
+  scroll-behavior: smooth;
+  overflow-x: hidden !important;
+}
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;

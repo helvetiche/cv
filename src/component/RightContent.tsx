@@ -2,10 +2,10 @@ import { FaLinkedin, FaGithub, FaFacebook, FaGoogle, FaDownload } from 'react-ic
 import BorderGlow from './BorderGlow';
 
 const socials = [
-  { icon: FaLinkedin, label: 'LinkedIn', href: '#' },
-  { icon: FaGithub, label: 'GitHub', href: '#' },
-  { icon: FaFacebook, label: 'Facebook', href: '#' },
-  { icon: FaGoogle, label: 'Email', href: '#' },
+  { icon: FaLinkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/nasche-del-ponso-040b3b277/' },
+  { icon: FaGithub, label: 'GitHub', href: 'https://github.com/helvetiche' },
+  { icon: FaFacebook, label: 'Facebook', href: 'https://www.facebook.com/nasche.del.ponso' },
+  { icon: FaGoogle, label: 'Email', href: 'mailto:naschedelponso7@gmail.com' },
 ];
 
 export default function RightContent() {
@@ -41,7 +41,9 @@ export default function RightContent() {
             colors={['#c084fc', '#f472b6', '#38bdf8']}
           >
             <a
-              href="#"
+              href="https://docs.google.com/document/d/1t3VHEhvuVTXtDvqVjI3HSQo05W2aScH6W8RwJpBC6rw/edit?tab=t.0"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{ padding: '0.4em 1em', display: 'flex', alignItems: 'center', gap: '0.5em' }}
               className="md:px-6 md:py-2"
             >

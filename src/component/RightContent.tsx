@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { FaLinkedin, FaGithub, FaFacebook, FaGoogle, FaDownload } from 'react-icons/fa';
 import BorderGlow from './BorderGlow';
 
@@ -11,6 +12,31 @@ const socials = [
 export default function RightContent() {
   return (
     <div className="relative z-30 max-w-full md:max-w-[40%] text-center md:text-right mt-6 md:mt-0">
+      {/* Profile Image with Border Glow */}
+      <div className="flex justify-center md:justify-end mb-6">
+        <BorderGlow
+          edgeSensitivity={30}
+          glowColor="0 0 100"
+          backgroundColor="transparent"
+          borderRadius={9999}
+          glowRadius={20}
+          glowIntensity={0.5}
+          coneSpread={25}
+          animated={false}
+          colors={["#ffffff", "#ffffff", "#ffffff"]}
+        >
+          <div className="relative w-28 h-28 md:w-36 md:h-36 lg:w-44 lg:h-44 rounded-full overflow-hidden">
+            <Image
+              src="/me.png"
+              alt="Nasche Del Ponso"
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+        </BorderGlow>
+      </div>
+
       <p
         className="text-white/90 md:text-white/70 text-sm md:text-lg font-light leading-relaxed"
         style={{ fontFamily: "var(--font-ibm-plex-serif), serif" }}

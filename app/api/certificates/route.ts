@@ -101,9 +101,11 @@ export async function POST(request: NextRequest) {
     }
 
     const now = new Date().toISOString();
+    const trimmedTitle = title.trim();
+    const trimmedIssuer = issuer.trim();
     const docRef = await adminDb.collection(COLLECTION).add({
-      title: title.trim(),
-      issuer: issuer.trim(),
+      title: trimmedTitle,
+      issuer: trimmedIssuer,
       date: date || "",
       credentialUrl: credentialUrl || "",
       description: description || "",
@@ -117,12 +119,12 @@ export async function POST(request: NextRequest) {
         success: true,
         data: {
           id: docRef.id,
-          title,
-          issuer,
-          date,
-          credentialUrl,
-          description,
-          imageUrl,
+          title: trimmedTitle,
+          issuer: trimmedIssuer,
+          date: date || "",
+          credentialUrl: credentialUrl || "",
+          description: description || "",
+          imageUrl: imageUrl || "",
           createdAt: now,
           updatedAt: now,
         },

@@ -101,9 +101,11 @@ export async function POST(request: NextRequest) {
     }
 
     const now = new Date().toISOString();
+    const trimmedTitle = title.trim();
+    const trimmedDescription = description.trim();
     const docRef = await adminDb.collection(COLLECTION).add({
-      title: title.trim(),
-      description: description.trim(),
+      title: trimmedTitle,
+      description: trimmedDescription,
       tags: tags || [],
       imageUrl: imageUrl || "",
       github: github || "",
@@ -115,7 +117,7 @@ export async function POST(request: NextRequest) {
     return securityHeaders(
       NextResponse.json({
         success: true,
-        data: { id: docRef.id, title, description, tags, imageUrl, github, live, createdAt: now, updatedAt: now },
+        data: { id: docRef.id, title: trimmedTitle, description: trimmedDescription, tags: tags || [], imageUrl: imageUrl || "", github: github || "", live: live || "", createdAt: now, updatedAt: now },
       })
     );
   } catch (error) {

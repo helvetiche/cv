@@ -15,26 +15,26 @@ const socialLinks = [
   {
     icon: FaGoogle,
     label: "Email",
-    value: "nasche.delponso@email.com",
-    href: "mailto:nasche.delponso@email.com",
+    value: "naschedelponso7@gmail.com",
+    href: "mailto:naschedelponso7@gmail.com",
   },
   {
     icon: FaLinkedin,
     label: "LinkedIn",
-    value: "linkedin.com/in/naschedelponso",
-    href: "#",
+    value: "linkedin.com/in/nasche-del-ponso",
+    href: "https://www.linkedin.com/in/nasche-del-ponso-040b3b277/",
   },
   {
     icon: FaGithub,
     label: "GitHub",
-    value: "github.com/naschedelponso",
-    href: "#",
+    value: "github.com/helvetiche",
+    href: "https://github.com/helvetiche",
   },
   {
     icon: FaFacebook,
     label: "Facebook",
-    value: "facebook.com/naschedelponso",
-    href: "#",
+    value: "facebook.com/nasche.del.ponso",
+    href: "https://www.facebook.com/nasche.del.ponso",
   },
 ];
 
@@ -130,7 +130,7 @@ export default function Contact() {
         {/* CTA */}
         <div className="text-center mt-8 md:mt-12">
           <a
-            href="mailto:nasche.delponso@email.com"
+            href="mailto:naschedelponso7@gmail.com"
             className="inline-flex items-center gap-2 px-6 py-3 md:px-8 md:py-4 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all duration-300 bg-white/[0.03] hover:bg-white/[0.06]"
           >
             <FaPaperPlane size={16} className="md:w-[18px] md:h-[18px]" />

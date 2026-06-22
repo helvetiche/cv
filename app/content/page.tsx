@@ -134,9 +134,11 @@ function ContentDashboardInner() {
           setUser(data.user);
           setAuthState("authenticated");
         } else {
+          console.log("Session check: not authenticated", data.error);
           setAuthState("unauthenticated");
         }
-      } catch {
+      } catch (err) {
+        console.error("Session check failed:", err);
         setAuthState("unauthenticated");
       }
     };

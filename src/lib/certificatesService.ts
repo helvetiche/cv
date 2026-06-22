@@ -25,6 +25,7 @@ export async function createCertificate(
 ): Promise<Certificate> {
   const res = await fetch("/api/certificates", {
     method: "POST",
+    credentials: "include",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(certificate),
   });
@@ -40,6 +41,7 @@ export async function updateCertificate(
 ): Promise<void> {
   const res = await fetch(`/api/certificates/${id}`, {
     method: "PUT",
+    credentials: "include",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(certificate),
   });
@@ -51,6 +53,7 @@ export async function updateCertificate(
 export async function deleteCertificate(id: string): Promise<void> {
   const res = await fetch(`/api/certificates/${id}`, {
     method: "DELETE",
+    credentials: "include",
   });
   const data = await res.json();
   if (!data.success) throw new Error(data.error);

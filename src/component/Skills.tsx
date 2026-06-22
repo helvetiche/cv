@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   SiReact,
   SiNextdotjs,
@@ -22,43 +23,109 @@ import {
   SiWebpack,
   SiVite,
   SiGraphql,
+  SiExpress,
+  SiSupabase,
+  SiPrisma,
+  SiOpenai,
+  SiStripe,
+  SiGooglecloud,
+  SiSocketdotio,
+  SiD3,
+  SiChartdotjs,
+  SiGnubash,
 } from "react-icons/si";
-import { FaCloud } from "react-icons/fa";
+import { FaCloud, FaRobot } from "react-icons/fa";
+import { BiCodeAlt, BiChip, BiWifi } from "react-icons/bi";
+import { getProjects } from "../lib/projectsService";
 
-interface Skill {
-  name: string;
-  icon: React.ElementType;
-}
-
-const skills: Skill[] = [
-  { name: "React", icon: SiReact },
-  { name: "Next.js", icon: SiNextdotjs },
-  { name: "TypeScript", icon: SiTypescript },
-  { name: "JavaScript", icon: SiJavascript },
-  { name: "Tailwind CSS", icon: SiTailwindcss },
-  { name: "Node.js", icon: SiNodedotjs },
-  { name: "Python", icon: SiPython },
-  { name: "PHP", icon: SiPhp },
-  { name: "GraphQL", icon: SiGraphql },
-  { name: "PostgreSQL", icon: SiPostgresql },
-  { name: "MongoDB", icon: SiMongodb },
-  { name: "MySQL", icon: SiMysql },
-  { name: "Firebase", icon: SiFirebase },
-  { name: "Redis", icon: SiRedis },
-  { name: "AWS", icon: FaCloud },
-  { name: "Vercel", icon: SiVercel },
-  { name: "Docker", icon: SiDocker },
-  { name: "Git", icon: SiGit },
-  { name: "Figma", icon: SiFigma },
-  { name: "Linux", icon: SiLinux },
-  { name: "Webpack", icon: SiWebpack },
-  { name: "Vite", icon: SiVite },
+/* ── Constant: AI / dev tools that are always shown ── */
+const CONSTANT_SKILLS = [
+  { name: "ChatGPT", icon: FaRobot },
+  { name: "Cursor", icon: BiCodeAlt },
+  { name: "Open Router", icon: BiWifi },
+  { name: "Kiro Dev", icon: BiChip },
+  { name: "Windsurf", icon: FaCloud },
+  { name: "Gemini", icon: FaRobot },
+  { name: "Claude", icon: FaRobot },
 ];
 
-/* Duplicate the list so the infinite scroll has no gap */
-const track = [...skills, ...skills];
+/* ── Full icon map for all possible project tags ── */
+const ICON_MAP: Record<string, React.ElementType> = {
+  "Next.js": SiNextdotjs,
+  React: SiReact,
+  "React Native": SiReact,
+  "Node.js": SiNodedotjs,
+  Express: SiExpress,
+  JavaScript: SiJavascript,
+  TypeScript: SiTypescript,
+  "Tailwind CSS": SiTailwindcss,
+  Tailwind: SiTailwindcss,
+  Firebase: SiFirebase,
+  "Google Cloud": SiGooglecloud,
+  Supabase: SiSupabase,
+  Vercel: SiVercel,
+  MongoDB: SiMongodb,
+  MySQL: SiMysql,
+  PostgreSQL: SiPostgresql,
+  Redis: SiRedis,
+  Prisma: SiPrisma,
+  OpenAI: SiOpenai,
+  Stripe: SiStripe,
+  "D3.js": SiD3,
+  "Chart.js": SiChartdotjs,
+  WebSocket: SiSocketdotio,
+  Git: SiGit,
+  Python: SiPython,
+  PHP: SiPhp,
+  GraphQL: SiGraphql,
+  AWS: FaCloud,
+  Docker: SiDocker,
+  Figma: SiFigma,
+  Linux: SiLinux,
+  Webpack: SiWebpack,
+  Vite: SiVite,
+  Cron: SiGnubash,
+  "Excel JS": BiCodeAlt,
+  Automation: BiChip,
+};
+
+function getIcon(name: string): React.ElementType {
+  return ICON_MAP[name] ?? FaRobot;
+}
 
 export default function Skills() {
+  const [projectTags, setProjectTags] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchTags() {
+      try {
+        const projects = await getProjects();
+        const tagSet = new Set<string>();
+        for (const project of projects) {
+          for (const tag of project.tags) {
+            tagSet.add(tag);
+          }
+        }
+        setProjectTags(Array.from(tagSet));
+      } catch (err) {
+        console.error("Failed to fetch project tags:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchTags();
+  }, []);
+
+  /* Merge constant skills + project tags (deduped) */
+  const projectSkills = projectTags.map((name) => ({
+    name,
+    icon: getIcon(name),
+  }));
+
+  const allSkills = [...CONSTANT_SKILLS, ...projectSkills];
+  const track = [...allSkills, ...allSkills];
+
   return (
     <section className="relative w-full bg-[#000000] py-12 md:py-16 lg:py-24 overflow-hidden">
       {/* Content */}
@@ -85,25 +152,38 @@ export default function Skills() {
 
         {/* Scrolling track */}
         <div className="flex w-max animate-marquee">
-          {track.map((skill, i) => {
-            const Icon = skill.icon;
-            return (
-              <div
-                key={`${skill.name}-${i}`}
-                className="flex-shrink-0 w-[140px] md:w-[160px] mx-2 md:mx-3"
-              >
-                <div className="group relative flex flex-col items-center justify-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm p-4 md:p-5 transition-all duration-300 hover:border-white/15 hover:bg-white/[0.05]">
-                  <Icon
-                    size={28}
-                    className="text-white/40 transition-colors duration-300 group-hover:text-white/70 md:w-8 md:h-8"
-                  />
-                  <span className="text-white/50 text-[11px] md:text-xs font-mono tracking-wide text-center transition-colors duration-300 group-hover:text-white/80">
-                    {skill.name}
-                  </span>
+          {loading
+            ? /* Skeleton while loading */
+              Array.from({ length: 12 }, (_, i) => (
+                <div
+                  key={`skeleton-${i}`}
+                  className="flex-shrink-0 w-[140px] md:w-[160px] mx-2 md:mx-3"
+                >
+                  <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 md:p-5">
+                    <div className="w-7 h-7 rounded-full bg-white/5 animate-pulse" />
+                    <div className="w-16 h-3 rounded bg-white/5 animate-pulse" />
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              ))
+            : track.map((skill, i) => {
+                const Icon = skill.icon;
+                return (
+                  <div
+                    key={`${skill.name}-${i}`}
+                    className="flex-shrink-0 w-[140px] md:w-[160px] mx-2 md:mx-3"
+                  >
+                    <div className="group relative flex flex-col items-center justify-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm p-4 md:p-5 transition-all duration-300 hover:border-white/15 hover:bg-white/[0.05]">
+                      <Icon
+                        size={28}
+                        className="text-white/40 transition-colors duration-300 group-hover:text-white/70 md:w-8 md:h-8"
+                      />
+                      <span className="text-white/50 text-[11px] md:text-xs font-mono tracking-wide text-center transition-colors duration-300 group-hover:text-white/80">
+                        {skill.name}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
         </div>
       </div>
 

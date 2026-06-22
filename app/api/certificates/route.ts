@@ -5,19 +5,12 @@ import { apiLimiter } from "@/src/lib/rate-limit";
 
 const COLLECTION = "certificates";
 
-// GET all certificates (protected)
+// GET all certificates (public)
 export async function GET(request: NextRequest) {
   try {
-    const user = await requireAuth(request);
-    if (!user) {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    // Rate limiting: 60 requests per minute per user
-    const { success: rateOk, limit, reset } = await apiLimiter.limit(user.uid);
+    // Rate limiting: 60 requests per minute per IP
+    const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
+    const { success: rateOk, limit, reset } = await apiLimiter.limit(clientIp);
     if (!rateOk) {
       return NextResponse.json(
         { success: false, error: "Too many requests. Try again later." },

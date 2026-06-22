@@ -10,10 +10,10 @@ import {
 } from "react-icons/fa";
 
 const socialLinks = [
-  { icon: FaLinkedin, label: "LinkedIn", href: "#" },
-  { icon: FaGithub, label: "GitHub", href: "#" },
-  { icon: FaFacebook, label: "Facebook", href: "#" },
-  { icon: FaGoogle, label: "Email", href: "mailto:nasche.delponso@email.com" },
+  { icon: FaLinkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/nasche-del-ponso-040b3b277/" },
+  { icon: FaGithub, label: "GitHub", href: "https://github.com/helvetiche" },
+  { icon: FaFacebook, label: "Facebook", href: "https://www.facebook.com/nasche.del.ponso" },
+  { icon: FaGoogle, label: "Email", href: "mailto:naschedelponso7@gmail.com" },
 ];
 
 export default function Footer() {

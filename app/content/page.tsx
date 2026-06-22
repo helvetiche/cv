@@ -3,6 +3,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 
 import { useState, useEffect, useCallback, Suspense } from "react";
+import Image from "next/image";
 import { getTechIcon } from "../../src/lib/techIcons";
 import type { Project } from "../../src/lib/projectsService";
 import type { Certificate } from "../../src/lib/certificatesService";
@@ -793,10 +794,12 @@ function ContentDashboardInner() {
                       {projectForm.imageUrl && (
                         <div className="mt-3 relative w-full rounded-lg overflow-hidden border border-white/10">
                           <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-                            <img
+                            <Image
                               src={projectForm.imageUrl}
                               alt="Preview"
-                              className="absolute inset-0 w-full h-full object-cover"
+                              fill
+                              className="object-cover"
+                              unoptimized
                               onError={(e) => {
                                 (e.target as HTMLImageElement).style.display = "none";
                               }}
@@ -970,11 +973,13 @@ function ContentDashboardInner() {
                       className="bg-[#0a0a0a] border border-white/10 rounded-xl p-4 md:p-6 flex flex-col md:flex-row gap-4 md:gap-6 group hover:border-white/20 transition-all"
                     >
                       {project.imageUrl && (
-                        <div className="w-full md:w-40 h-24 md:h-28 rounded-lg overflow-hidden shrink-0 bg-white/5">
-                          <img
+                        <div className="w-full md:w-40 h-24 md:h-28 rounded-lg overflow-hidden shrink-0 bg-white/5 relative">
+                          <Image
                             src={project.imageUrl}
                             alt={project.title}
-                            className="w-full h-full object-cover"
+                            fill
+                            className="object-cover"
+                            unoptimized
                           />
                         </div>
                       )}
@@ -1219,10 +1224,12 @@ function ContentDashboardInner() {
                       {certificateForm.imageUrl && (
                         <div className="mt-3 relative w-full rounded-lg overflow-hidden border border-white/10">
                           <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-                            <img
+                            <Image
                               src={certificateForm.imageUrl}
                               alt="Preview"
-                              className="absolute inset-0 w-full h-full object-cover"
+                              fill
+                              className="object-cover"
+                              unoptimized
                               onError={(e) => {
                                 (e.target as HTMLImageElement).style.display = "none";
                               }}
@@ -1309,11 +1316,13 @@ function ContentDashboardInner() {
                       className="bg-[#0a0a0a] border border-white/10 rounded-xl p-4 md:p-6 flex flex-col md:flex-row gap-4 md:gap-6 group hover:border-white/20 transition-all"
                     >
                       {certificate.imageUrl && (
-                        <div className="w-full md:w-40 h-24 md:h-28 rounded-lg overflow-hidden shrink-0 bg-white/5">
-                          <img
+                        <div className="w-full md:w-40 h-24 md:h-28 rounded-lg overflow-hidden shrink-0 bg-white/5 relative">
+                          <Image
                             src={certificate.imageUrl}
                             alt={certificate.title}
-                            className="w-full h-full object-cover"
+                            fill
+                            className="object-cover"
+                            unoptimized
                           />
                         </div>
                       )}

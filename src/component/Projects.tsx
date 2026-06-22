@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import BorderGlow from "./BorderGlow";
 import GridBackground from "./GridBackground";
@@ -39,10 +40,12 @@ function ProjectImage({ imageUrl, title }: { imageUrl: string; title: string }) 
             <span className="text-white/20 text-sm font-mono">{title}</span>
           </div>
         ) : (
-          <img
+          <Image
             src={imageUrl}
             alt={`${title} screenshot`}
-            className="absolute inset-0 w-full h-full object-cover"
+            fill
+            className="object-cover"
+            unoptimized
             onError={() => setHasError(true)}
           />
         )}

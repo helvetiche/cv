@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import BorderGlow from "./BorderGlow";
 import GridBackground from "./GridBackground";
 import { getCertificates, type Certificate } from "../lib/certificatesService";
@@ -34,10 +35,12 @@ function CertificateCard({ certificate }: { certificate: Certificate }) {
         {certificate.imageUrl && !imageError && (
           <div className="relative w-full rounded-t-xl overflow-hidden">
             <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-              <img
+              <Image
                 src={certificate.imageUrl}
                 alt={`${certificate.title} certificate`}
-                className="absolute inset-0 w-full h-full object-cover"
+                fill
+                className="object-cover"
+                unoptimized
                 onError={() => setImageError(true)}
               />
             </div>

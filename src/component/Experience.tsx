@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import BorderGlow from "./BorderGlow";
 import GridBackground from "./GridBackground";
@@ -187,10 +188,12 @@ function ImageCarousel({ images }: { images: string[] }) {
           {images.map((src, i) => (
             <div key={i} className="flex-[0_0_100%] min-w-0 h-full">
               <div className="relative w-full h-full" style={{ paddingBottom: "56.25%" }}>
-                <img
+                <Image
                   src={src}
                   alt={`Project ${i + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                  fill
+                  className="object-cover rounded-lg"
+                  unoptimized
                 />
               </div>
             </div>

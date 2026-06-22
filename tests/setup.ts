@@ -113,13 +113,13 @@ process.env = {
 };
 
 // Global test helpers
-// eslint-disable-next-line no-undef
-(global as unknown as Record<string, unknown>).createMockRequest = (
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).createMockRequest = (
   method: string,
-  body?: Record<string, unknown>,
+  body?: Record<string, any>,
   headers?: Record<string, string>,
   cookies?: Record<string, string>
-): Request => {
+): any => {
   const url = new URL("http://localhost:3000/api/test");
   return {
     method,
@@ -133,17 +133,16 @@ process.env = {
       get: jest.fn((name: string) => cookies?.[name] ? { value: cookies[name] } : undefined),
     },
     json: jest.fn().mockResolvedValue(body || {}),
-  } as unknown as Request;
+  };
 };
 
-// eslint-disable-next-line no-undef
-(global as unknown as Record<string, unknown>).createAuthenticatedRequest = (
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).createAuthenticatedRequest = (
   method: string,
-  body?: Record<string, unknown>,
+  body?: Record<string, any>,
   headers?: Record<string, string>
-): Request => {
-  const g = global as unknown as Record<string, unknown>;
-  return g.createMockRequest(method, body, headers, {
+): any => {
+  return (global as any).createMockRequest(method, body, headers, {
     __session: "valid-session-cookie",
-  }) as Request;
+  });
 };

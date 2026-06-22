@@ -1,0 +1,12 @@
+# robots.txt for nascheponso.com
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /content/
+
+# Crawl-delay for rate limiting
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://nascheponso.com/sitemap.xml

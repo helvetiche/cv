@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, IBM_Plex_Serif } from "next/font/google";
+import Script from "next/script";
 import { MotionBlurProvider } from "./MotionBlurProvider";
 import "./globals.css";
 
@@ -110,7 +111,7 @@ export const metadata: Metadata = {
     canonical: "https://nascheponso.com",
   },
   verification: {
-    google: "3D8tT0LE0Es4uY7u0a0CzC9HrxAThDCO-vDxe58e3Ec",
+    google: "mYZinsDps1kzOzqT3DJEuApIsAGn_HLFgmZllvmmc68",
   },
 };
 
@@ -167,6 +168,25 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${ibmPlexSerif.variable} h-full antialiased`}
     >
       <head>
+        {/* Google Analytics (gtag.js) */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+        />
+        <Script
+          id="gtag-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-XXXXXXXXXX', {
+                page_path: window.location.pathname,
+              });
+            `,
+          }}
+        />
         {/* JSON-LD Structured Data */}
         <script
           type="application/ld+json"

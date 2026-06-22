@@ -27,7 +27,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://nascheponso.com"),
+  metadataBase: new URL("https://naschedp.vercel.app"),
   
   // ===== SEARCH ENGINE META =====
   title: {
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     "TypeScript",
     "Node.js",
   ],
-  authors: [{ name: "Nasche Del Ponso", url: "https://nascheponso.com" }],
+  authors: [{ name: "Nasche Del Ponso", url: "https://naschedp.vercel.app" }],
   creator: "Nasche Del Ponso",
   publisher: "Nasche Del Ponso",
   formatDetection: {
@@ -66,14 +66,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://nascheponso.com",
+    url: "https://naschedp.vercel.app",
     siteName: "Nasche Del Ponso",
     title: "Nasche Del Ponso | Junior Modern Technology Generalist",
     description:
       "Junior Modern Technology Generalist specializing in integration, cloud computing, and artificial intelligence. Building scalable solutions that drive innovation.",
     images: [
       {
-        url: "https://nascheponso.com/og.png",
+        url: "https://naschedp.vercel.app/og.png",
         width: 1200,
         height: 630,
         alt: "Nasche Del Ponso - Junior Modern Technology Generalist",
@@ -88,7 +88,7 @@ export const metadata: Metadata = {
     title: "Nasche Del Ponso | Portfolio",
     description:
       "Junior Modern Technology Generalist specializing in integration, cloud computing, and AI. Building the future, one integration at a time.",
-    images: ["https://nascheponso.com/og.png"],
+    images: ["https://naschedp.vercel.app/og.png"],
     creator: "@nascheponso",
     site: "@nascheponso",
   },
@@ -108,7 +108,7 @@ export const metadata: Metadata = {
   
   // ===== CANONICAL & VERIFICATION =====
   alternates: {
-    canonical: "https://nascheponso.com",
+    canonical: "https://naschedp.vercel.app",
   },
   verification: {
     google: "mYZinsDps1kzOzqT3DJEuApIsAGn_HLFgmZllvmmc68",
@@ -120,7 +120,7 @@ const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Nasche Del Ponso",
-  url: "https://nascheponso.com",
+  url: "https://naschedp.vercel.app",
   jobTitle: "Junior Modern Technology Generalist",
   description:
     "Specializing in integration, cloud computing, and artificial intelligence",
@@ -148,7 +148,7 @@ const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "Nasche Del Ponso Portfolio",
-  url: "https://nascheponso.com",
+  url: "https://naschedp.vercel.app",
   description:
     "Portfolio showcasing projects, skills, and achievements in cloud computing, AI, and web development",
   author: {

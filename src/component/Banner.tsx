@@ -210,8 +210,8 @@ export default function Banner() {
     if (!target) return;
 
     gsap.to(window, {
-      duration: 1,
-      ease: "power3.inOut",
+      duration: 0.25,
+      ease: "power1.out",
       scrollTo: {
         y: target,
         offsetY: BANNER_OFFSET,

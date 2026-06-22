@@ -110,10 +110,7 @@ export const metadata: Metadata = {
     canonical: "https://nascheponso.com",
   },
   verification: {
-    google: "YOUR_GOOGLE_VERIFICATION_CODE",
-    // Additional verification can be added:
-    // yandex: "YOUR_YANDEX_VERIFICATION",
-    // bing: "YOUR_BING_VERIFICATION",
+    google: "3D8tT0LE0Es4uY7u0a0CzC9HrxAThDCO-vDxe58e3Ec",
   },
 };
 

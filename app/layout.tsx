@@ -73,7 +73,7 @@ export const metadata: Metadata = {
       "Junior Modern Technology Generalist specializing in integration, cloud computing, and artificial intelligence. Building scalable solutions that drive innovation.",
     images: [
       {
-        url: "/og.png",
+        url: "https://nascheponso.com/og.png",
         width: 1200,
         height: 630,
         alt: "Nasche Del Ponso - Junior Modern Technology Generalist",
@@ -88,7 +88,7 @@ export const metadata: Metadata = {
     title: "Nasche Del Ponso | Portfolio",
     description:
       "Junior Modern Technology Generalist specializing in integration, cloud computing, and AI. Building the future, one integration at a time.",
-    images: ["/og.png"],
+    images: ["https://nascheponso.com/og.png"],
     creator: "@nascheponso",
     site: "@nascheponso",
   },
